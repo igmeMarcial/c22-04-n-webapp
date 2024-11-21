@@ -129,6 +129,8 @@ model Pet {
   special_instructions String?
   medical_needs       String?
   is_active           Int
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @default(now()) @updatedAt @map(name: "updated_at")
 
   owner       User     @relation(fields: [userId], references: [id])
   bookings    Booking[]
