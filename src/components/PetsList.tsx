@@ -3,6 +3,16 @@ import { useEffect, useState } from "react";
 interface Pet {
   id: number;
   name: string;
+    owner: {
+        id: number;
+        name: string;
+        last_name: string;
+        email: string;
+        phone: string | null;
+        address: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
   species: string;
   breed: string | null;
   age: number;
@@ -55,18 +65,20 @@ const PetsList = () => {
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-4 py-2 border-b">Name</th>
-              <th className="px-4 py-2 border-b">Species</th>
-              <th className="px-4 py-2 border-b">Breed</th>
-              <th className="px-4 py-2 border-b">Age</th>
-              <th className="px-4 py-2 border-b">Weight</th>
-              <th className="px-4 py-2 border-b">Status</th>
+              <th className="px-4 py-2 border-b">Nombre</th>
+              <th className="px-4 py-2 border-b">Dueño</th>
+              <th className="px-4 py-2 border-b">Especie</th>
+              <th className="px-4 py-2 border-b">Raza</th>
+              <th className="px-4 py-2 border-b">Edad</th>
+              <th className="px-4 py-2 border-b">Peso</th>
+              <th className="px-4 py-2 border-b">Estatus</th>
             </tr>
           </thead>
           <tbody>
             {pets.map((pet) => (
               <tr key={pet.id} className="hover:bg-gray-50">
                 <td className="px-4 py-2 border-b">{pet.name}</td>
+                <td className="px-4 py-2 border-b">{pet.owner.name} {pet.owner.last_name}</td>
                 <td className="px-4 py-2 border-b">{pet.species}</td>
                 <td className="px-4 py-2 border-b">
                   {pet.breed ? pet.breed : "Not specified"}

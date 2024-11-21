@@ -27,13 +27,17 @@ const createPet = async (req: NextApiRequest, res: NextApiResponse) => {
 
 // Obtener todas las mascotas
 const getPets = async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    const pets = await prisma.pet.findMany();
-    return res.status(200).json(pets);
-  } catch (error) {
-    return res.status(500).json({ error: "Error fetching pets" });
-  }
-};
+    try {
+      const pets = await prisma.pet.findMany({
+        include: {
+          owner: true, // Incluye la información del usuario asociado a cada mascota
+        },
+      });
+      return res.status(200).json(pets);
+    } catch (error) {
+      return res.status(500).json({ error: "Error fetching pets" });
+    }
+  };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
