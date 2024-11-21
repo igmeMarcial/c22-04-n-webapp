@@ -1,8 +1,8 @@
-
+import React from "react";
 import BookingsList from "../components/BookingsList";
 import CreateBookingForm from "../components/CreateBookingForm";
 
-export default function BookingPage() {
+const BookingPage: React.FC = () => {
   return (
     <div>
       <h1>Booking Page</h1>
@@ -10,4 +10,6 @@ export default function BookingPage() {
       <BookingsList />
     </div>
   );
-}
+};
+
+export default BookingPage;

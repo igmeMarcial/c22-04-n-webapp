@@ -1,7 +1,38 @@
 import prisma from "../../lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+// Definimos la interfaz para los datos de la reserva
+interface Booking {
+  id: number;
+  owner_name: string;
+  caregiver_name: string;
+  pet_name: string;
+  service_name: string;
+  start_time: Date;
+  end_time: Date;
+  status: number;
+  total_price: Decimal;
+  additional_instructions: string | null;
+}
+
+// Definimos la interfaz para la creación de reservas
+interface BookingData {
+  owner_id: number;
+  caregiver_id: number;
+  pet_id: number;
+  service_id: number;
+  start_time: Date;
+  end_time: Date;
+  status: number;
+  total_price: Decimal;
+  additional_instructions: string | null;
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void> {
   if (req.method === "GET") {
     try {
       const bookings = await prisma.booking.findMany({
@@ -17,7 +48,7 @@ export default async function handler(req, res) {
         },
       });
 
-      const formattedBookings = bookings.map((booking) => ({
+      const formattedBookings: Booking[] = bookings.map((booking) => ({
         id: booking.id,
         owner_name: booking.owner?.name || "No Owner Found",
         caregiver_name: booking.caregiver?.user?.name || "No Caregiver Found",
@@ -31,7 +62,7 @@ export default async function handler(req, res) {
       }));
 
       return res.status(200).json(formattedBookings);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching bookings:", error);
       return res.status(500).json({ error: "Error fetching bookings" });
     }
@@ -41,7 +72,7 @@ export default async function handler(req, res) {
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ error: "Request body is empty or invalid." });
     }
-  
+
     const {
       owner_id,
       caregiver_id,
@@ -53,8 +84,8 @@ export default async function handler(req, res) {
       total_price,
       additional_instructions,
     } = req.body;
-  
-    // Validate required fields
+
+    // Validación de campos requeridos
     if (
       !owner_id ||
       !caregiver_id ||
@@ -68,14 +99,14 @@ export default async function handler(req, res) {
         .status(400)
         .json({ error: "Missing or invalid required fields." });
     }
-  
-    // Validate total_price as a number
-    if (isNaN(total_price) || total_price === null) {
+
+    // Validar que `total_price` sea un número
+    if (isNaN(total_price)) {
       return res.status(400).json({ error: "Invalid total_price value." });
     }
-  
-    // Construct bookingData
-    const bookingData = {
+
+    // Crear el objeto `BookingData`
+    const bookingData: BookingData = {
       owner_id: parseInt(owner_id, 10),
       caregiver_id: parseInt(caregiver_id, 10),
       pet_id: parseInt(pet_id, 10),
@@ -86,35 +117,24 @@ export default async function handler(req, res) {
       total_price: new Decimal(total_price),
       additional_instructions: additional_instructions || null,
     };
-  
-    // Log to inspect parsed data
-    console.log("Parsed booking data:", bookingData);
-  
+
     try {
       const newBooking = await prisma.bookings.create({
         data: bookingData,
       });
-    
+
       return res.status(201).json(newBooking);
-    } catch (error) {
-      // Check if error is null, undefined, or not an object
-      if (error === null || error === undefined || typeof error !== 'object') {
-        console.log("Error creating booking: An unexpected error occurred. The error object is invalid.");
-      } else {
-        // Safe logging, check if error has expected properties
-        console.log("Error creating booking:", error.message || error);
-      }
-    
-      // Check for Prisma-specific error codes
-      if (error?.code === "P2003") {
+    } catch (error: unknown) {
+      console.error("Error creating booking:", error);
+
+      // Prisma-specific error handling
+      if ((error as any)?.code === "P2003") {
         return res.status(400).json({ error: "Invalid foreign key. Please check the IDs." });
       }
-    
+
       return res.status(500).json({ error: "Error creating booking" });
     }
-    
   }
-  
 
   // Manejo de métodos no soportados
   res.setHeader("Allow", ["GET", "POST"]);
