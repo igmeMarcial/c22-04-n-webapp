@@ -124,8 +124,8 @@ model Pet {
   name                String
   species             String
   breed               String?
-  age                 Decimal
-  weight              Decimal
+  age                 Int
+  weight              Int
   special_instructions String?
   medical_needs       String?
   is_active           Int
