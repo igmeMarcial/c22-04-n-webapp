@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider     = "postgresql"
+  provider     = "mysql"
   url          = env("DATABASE_URL")
 }
 
@@ -49,17 +49,26 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
-  role          UserRole  @default(USER)
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  last_name   String
+  phone       String
+  address     String?
+  latitude    Decimal
+  longitude   Decimal
+  last_login  DateTime?
+  role        UserRole @default(USER)
+  image       String?
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @default(now()) @map(name: "updated_at")
 
   accounts Account[]
   sessions Session[]
+  pets     Pet[]
+  bookings Booking[] @relation("OwnerBookings")
+  caregiverProfile CaregiverProfile?
 
   stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
@@ -69,13 +78,109 @@ model User {
   @@map(name: "users")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Booking {
+  id                    Int      @id @default(autoincrement())
+  ownerId               String
+  caregiverId           Int
+  petId                 Int
+  serviceId             Int
+  start_time            DateTime
+  end_time              DateTime
+  status                Int
+  total_price           Decimal
+  additional_instructions String?
 
-  @@unique([identifier, token])
-  @@map(name: "verification_tokens")
+  owner       User          @relation("OwnerBookings", fields: [ownerId], references: [id])
+  caregiver   CaregiverProfile @relation(fields: [caregiverId], references: [id])
+  pet         Pet           @relation(fields: [petId], references: [id])
+  service     Service       @relation(fields: [serviceId], references: [id])
+  reviews     Review?
+
+  @@map("bookings")
 }
 
+model CaregiverProfile {
+  id                 Int      @id @default(autoincrement())
+  userId             String   @unique
+  experience         String?
+  description        String?
+  coverage_radius_KM Int
+  verified           Int
+  verification_date  DateTime?
+  average_rating     Decimal
+  total_reviews      Int
 
+  user        User             @relation(fields: [userId], references: [id])
+  bookings    Booking[]
+  rates       CaregiverRate[]
+  availability CaregiverAvailability[]
+
+  @@map("caregiver_profiles")
+}
+
+model Pet {
+  id                  Int      @id @default(autoincrement())
+  userId              String
+  name                String
+  species             String
+  breed               String?
+  age                 Decimal
+  weight              Decimal
+  special_instructions String?
+  medical_needs       String?
+  is_active           Int
+
+  owner       User     @relation(fields: [userId], references: [id])
+  bookings    Booking[]
+
+  @@map("pets")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  bookingId  Int      @unique
+  rating     Int
+  comment    String?
+
+  booking    Booking @relation(fields: [bookingId], references: [id])
+
+  @@map("reviews")
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  min_duration Int
+  max_duration Int
+
+  bookings Booking[]
+  rates    CaregiverRate[]
+
+  @@map("services")
+}
+
+model CaregiverAvailability {
+  id          Int      @id @default(autoincrement())
+  caregiverId Int
+  weekday     Int
+  start_time  DateTime
+  end_time    DateTime
+
+  caregiver CaregiverProfile @relation(fields: [caregiverId], references: [id])
+
+  @@map("caregiver_availability")
+}
+
+model CaregiverRate {
+  id                    Int      @id @default(autoincrement())
+  caregiverId           Int
+  serviceId             Int
+  base_price            Decimal
+  additional_hour_price Decimal
+
+  caregiver CaregiverProfile @relation(fields: [caregiverId], references: [id])
+  service   Service          @relation(fields: [serviceId], references: [id])
+
+  @@map("caregiver_rates")
+}
