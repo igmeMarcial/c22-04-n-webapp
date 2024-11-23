@@ -1,15 +1,13 @@
 import React from "react";
-import BookingsList from "../components/BookingsList";
-import CreateBookingForm from "../components/CreateBookingForm";
+import PetForm from "@/components/PetForm";
 
-const BookingPage: React.FC = () => {
+const Register: React.FC = () => {
   return (
     <div>
       <h1>Booking Page</h1>
-      <CreateBookingForm />
-      <BookingsList />
+      <PetForm userId="c153c8fc-b306-48dd-87a9-9ec15756ee73" />
     </div>
   );
 };
 
-export default BookingPage;
+export default Register;

@@ -21,7 +21,7 @@ const createPet = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     return res.status(201).json(newPet);
   } catch (error) {
-    return res.status(500).json({ error: "Error creating pet" });
+    return res.status(500).json({ error: error.message });
   }
 };
 
