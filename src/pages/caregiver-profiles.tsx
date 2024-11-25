@@ -11,6 +11,7 @@ const CaregiverProfiles = () => {
         average_rating: 0,
         total_reviews: 0,
     });
+    // TODO: Edit no esta funcionando, creo que falta pasar el id
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState<number | null>(null);
 
