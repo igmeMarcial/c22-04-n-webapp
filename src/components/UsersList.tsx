@@ -47,7 +47,7 @@ const UserList = () => {
             {users.length === 0 ? (
                 <p>No users found.</p>
             ) : (
-                <table className="table-auto w-full">
+                <table className="table-auto w-full" style={{ backgroundColor: "white" }}>
                     <thead>
                         <tr>
                             <th className="border p-2">ID</th>
