@@ -94,9 +94,9 @@ const PetsList = () => {
                   <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" href={`/pets/${pet.id}`}>
                     Detalles
                   </Link>
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    Edit
-                  </button>
+                  <Link className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" href={`/pets/edit/${pet.id}`}>
+                    Editar
+                  </Link>
                   <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                     Delete
                   </button>
