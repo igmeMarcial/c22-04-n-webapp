@@ -20,7 +20,19 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // Listas predefinidas de especies y razas
+  const speciesOptions = ['Perro', 'Gato', 'Ave', 'Reptil', 'Otro'];
+  const breedOptions: { [key: string]: string[] } = {
+    Perro: ['Labrador', 'Bulldog', 'Poodle', 'Chihuahua'],
+    Gato: ['Siames', 'Persa', 'Maine Coon', 'Siberiano'],
+    Ave: ['Loro', 'Canario', 'Periquito', 'Cacatúa'],
+    Reptil: ['Iguana', 'Gecko', 'Serpiente', 'Tortuga'],
+    Otro: ['Desconocido'],
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
     const parsedValue = type === 'number' ? Number(value) : value;
     setFormData({ ...formData, [name]: parsedValue });
@@ -90,29 +102,44 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
         <label htmlFor="species" className="block text-sm font-medium">
           Especie
         </label>
-        <input
-          type="text"
+        <select
           id="species"
           name="species"
           value={formData.species}
           onChange={handleChange}
           required
           className="mt-1 block w-full rounded border-gray-300 shadow-sm"
-        />
+        >
+          <option value="">Selecciona una especie</option>
+          {speciesOptions.map((species) => (
+            <option key={species} value={species}>
+              {species}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
         <label htmlFor="breed" className="block text-sm font-medium">
           Raza
         </label>
-        <input
-          type="text"
+        <select
           id="breed"
           name="breed"
           value={formData.breed}
           onChange={handleChange}
+          required
           className="mt-1 block w-full rounded border-gray-300 shadow-sm"
-        />
+          disabled={!formData.species}
+        >
+          <option value="">Selecciona una raza</option>
+          {formData.species &&
+            breedOptions[formData.species]?.map((breed) => (
+              <option key={breed} value={breed}>
+                {breed}
+              </option>
+            ))}
+        </select>
       </div>
 
       <div>
