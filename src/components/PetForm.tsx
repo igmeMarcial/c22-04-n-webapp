@@ -67,7 +67,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white shadow rounded">
-      <h2 className="text-lg font-bold">Create a New Pet</h2>
+      <h2 className="text-lg font-bold">Registrar nueva mascota</h2>
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
 
@@ -194,7 +194,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
         disabled={loading}
         className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
-        {loading ? 'Creando...' : 'Crear mascota'}
+        {loading ? 'Registrando...' : 'Registrar mascota'}
       </button>
     </form>
   );
