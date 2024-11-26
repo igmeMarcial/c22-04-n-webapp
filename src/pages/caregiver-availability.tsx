@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const CaregiverAvailability = () => {
   const [availability, setAvailability] = useState([]);
   const [formData, setFormData] = useState({
@@ -12,7 +14,7 @@ const CaregiverAvailability = () => {
   const [editId, setEditId] = useState<number | null>(null);
 
   const fetchAvailability = async () => {
-    const res = await fetch('/api/caregive-availability');
+    const res = await fetch('/api/caregiver-availability');
     const data = await res.json();
     setAvailability(data);
   };
@@ -78,13 +80,18 @@ const CaregiverAvailability = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Weekday</label>
-          <input
-            type="number"
+          <select
             value={formData.weekday}
             onChange={(e) => setFormData({ ...formData, weekday: Number(e.target.value) })}
             className="border p-2 rounded w-full"
             required
-          />
+          >
+            {daysOfWeek.map((day, index) => (
+              <option key={index} value={index}>
+                {day}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
@@ -116,7 +123,7 @@ const CaregiverAvailability = () => {
 
       {/* Tabla de disponibilidad */}
       <div className="mt-6">
-        <table className="w-full border-collapse border border-gray-300">
+        <table className="w-full border-collapse border border-gray-300" style={{ backgroundColor: 'white' }}>
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-gray-300 p-2">ID</th>
@@ -132,7 +139,9 @@ const CaregiverAvailability = () => {
               <tr key={item.id} className="hover:bg-gray-100">
                 <td className="border border-gray-300 p-2 text-center">{item.id}</td>
                 <td className="border border-gray-300 p-2">{item.caregiverId}</td>
-                <td className="border border-gray-300 p-2 text-center">{item.weekday}</td>
+                <td className="border border-gray-300 p-2 text-center">
+                  {daysOfWeek[item.weekday]}
+                </td>
                 <td className="border border-gray-300 p-2 text-center">{new Date(item.start_time).toLocaleString()}</td>
                 <td className="border border-gray-300 p-2 text-center">{new Date(item.end_time).toLocaleString()}</td>
                 <td className="border border-gray-300 p-2 flex gap-2 justify-center">
