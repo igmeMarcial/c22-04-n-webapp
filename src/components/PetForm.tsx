@@ -73,7 +73,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium">
-          Name
+          Nombre
         </label>
         <input
           type="text"
@@ -88,7 +88,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="species" className="block text-sm font-medium">
-          Species
+          Especie
         </label>
         <input
           type="text"
@@ -103,7 +103,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="breed" className="block text-sm font-medium">
-          Breed
+          Raza
         </label>
         <input
           type="text"
@@ -117,7 +117,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="age" className="block text-sm font-medium">
-          Age
+          Edad
         </label>
         <input
           type="number"
@@ -133,7 +133,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="weight" className="block text-sm font-medium">
-          Weight (kg)
+          Peso (kg)
         </label>
         <input
           type="number"
@@ -149,7 +149,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="special_instructions" className="block text-sm font-medium">
-          Special Instructions
+          Instrucciones especiales
         </label>
         <textarea
           id="special_instructions"
@@ -162,7 +162,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
 
       <div>
         <label htmlFor="medical_needs" className="block text-sm font-medium">
-          Medical Needs
+          Necesidades médicas
         </label>
         <textarea
           id="medical_needs"
@@ -194,7 +194,7 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
         disabled={loading}
         className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
-        {loading ? 'Creating...' : 'Create Pet'}
+        {loading ? 'Creando...' : 'Crear mascota'}
       </button>
     </form>
   );
