@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PetDetails from '@/components/PetDetails';
+import PetDetails from '@/components/pets/PetDetails';
 import Link from 'next/link';
 
 const PetDetailsPage: React.FC = () => {

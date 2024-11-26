@@ -1,5 +1,5 @@
 import React from "react";
-import PetsList from "../../components/PetsList";
+import PetsList from "../../components/pets/PetsList";
 
 
 const PetsPage: React.FC = () => {

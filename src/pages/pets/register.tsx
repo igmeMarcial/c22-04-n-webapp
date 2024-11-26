@@ -1,6 +1,6 @@
 import React from "react";
 
-import PetForm from "@/components/PetForm";
+import PetForm from "@/components/pets/PetForm";
 
 
 const RegisterPetPage: React.FC = () => {
