@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miercoes', 'Jueves', 'Viernes', 'Sabado'];
 
 const CaregiverAvailability = () => {
   const [availability, setAvailability] = useState([]);

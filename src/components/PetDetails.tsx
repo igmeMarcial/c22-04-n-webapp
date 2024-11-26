@@ -17,6 +17,7 @@ interface Pet {
   id: number;
   name: string;
   breed: string;
+  species: string;
   age: number;
   userId: string;
   special_instructions: string;
@@ -68,12 +69,14 @@ const PetDetails: React.FC = () => {
     <div className="min-w-full bg-white border border-gray-300">
       <h1>Pet Details</h1>
       <p><strong>ID:</strong> {pet.id}</p>
-      <p><strong>Name:</strong> {pet.name}</p>
-      <p><strong>Breed:</strong> {pet.breed}</p>
-      <p><strong>Age:</strong> {pet.age}</p>
-      <p><strong>Special Instructions:</strong> {pet.special_instructions}</p>
-      <p><strong>Medical Needs:</strong> {pet.medical_needs}</p>
-      <p><strong>Is Active:</strong> {pet.is_active ? 'Si' : 'No'}</p>
+      <p><strong>Nombre:</strong> {pet.name}</p>
+      <p><strong>Dueño ID:</strong> {pet.userId}</p>
+      <p><strong>Raza</strong> {pet.breed}</p>
+      <p><strong>Especie:</strong> {pet.species}</p>
+      <p><strong>Edad:</strong> {pet.age}</p>
+      <p><strong>Instrucciones Especiales:</strong> {pet.special_instructions}</p>
+      <p><strong>Necesidades Medicas:</strong> {pet.medical_needs}</p>
+      <p><strong>Esta Activo?:</strong> {pet.is_active ? 'Si' : 'No'}</p>
     </div>
   );
 };

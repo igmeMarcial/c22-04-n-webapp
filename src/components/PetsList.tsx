@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from 'next/link';
 
 interface Pet {
   id: number;
@@ -72,6 +73,7 @@ const PetsList = () => {
               <th className="px-4 py-2 border-b">Edad</th>
               <th className="px-4 py-2 border-b">Peso</th>
               <th className="px-4 py-2 border-b">Estatus</th>
+              <th className="px-4 py-2 border-b">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -87,6 +89,17 @@ const PetsList = () => {
                 <td className="px-4 py-2 border-b">{pet.weight} kg</td>
                 <td className="px-4 py-2 border-b">
                   {pet.is_active ? "Active" : "Inactive"}
+                </td>
+                <td className="px-4 py-2 border-b">
+                  <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" href={`/pets/${pet.id}`}>
+                      Detalles
+                  </Link>
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Edit
+                  </button>
+                  <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
