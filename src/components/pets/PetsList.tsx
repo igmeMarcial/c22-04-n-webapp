@@ -4,16 +4,16 @@ import Link from 'next/link';
 interface Pet {
   id: number;
   name: string;
-    owner: {
-        id: number;
-        name: string;
-        last_name: string;
-        email: string;
-        phone: string | null;
-        address: string | null;
-        createdAt: string;
-        updatedAt: string;
-    };
+  owner: {
+    id: number;
+    name: string;
+    last_name: string;
+    email: string;
+    phone: string | null;
+    address: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
   species: string;
   breed: string | null;
   age: number;
@@ -92,7 +92,7 @@ const PetsList = () => {
                 </td>
                 <td className="px-4 py-2 border-b">
                   <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" href={`/pets/${pet.id}`}>
-                      Detalles
+                    Detalles
                   </Link>
                   <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     Edit
