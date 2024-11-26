@@ -8,6 +8,9 @@ const getPetById = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const pet = await prisma.pet.findUnique({
       where: { id: Number(id) },
+      include: {
+        owner: true, // Incluye la información del usuario asociado a la mascota
+      },
     });
 
     if (!pet) {
