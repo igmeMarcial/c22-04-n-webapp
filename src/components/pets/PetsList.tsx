@@ -59,7 +59,7 @@ const PetsList = () => {
 
   return (
     <div className="overflow-x-auto">
-      <h1 className="text-2xl font-bold mb-4">Pets List</h1>
+      <h1 className="text-2xl font-bold mb-4">Lista de mascotas</h1>
       {pets.length === 0 ? (
         <p>No pets available</p>
       ) : (
