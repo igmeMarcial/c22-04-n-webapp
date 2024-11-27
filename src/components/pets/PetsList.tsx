@@ -49,6 +49,23 @@ const PetsList = () => {
     fetchPets();
   }, []); // El array vacío significa que esto solo se ejecutará una vez al montar el componente
 
+  const handleDelete = async (id: number) => {
+    if (confirm("¿Estás seguro de que deseas eliminar esta mascota?")) {
+      try {
+        const response = await fetch(`/api/pets/${id}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error("Error deleting pet");
+        }
+        // Filtrar la mascota eliminada del estado local
+        setPets((prevPets) => prevPets.filter((pet) => pet.id !== id));
+      } catch (error: any) {
+        alert("Error eliminando la mascota: " + error.message);
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -90,15 +107,18 @@ const PetsList = () => {
                 <td className="px-4 py-2 border-b">
                   {pet.is_active ? "Active" : "Inactive"}
                 </td>
-                <td className="px-4 py-2 border-b">
+                <td className="px-4 py-2 border-b space-x-2">
                   <Link className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" href={`/pets/${pet.id}`}>
                     Detalles
                   </Link>
                   <Link className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" href={`/pets/edit/${pet.id}`}>
                     Editar
                   </Link>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                    Delete
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onClick={() => handleDelete(pet.id)}
+                  >
+                    Eliminar
                   </button>
                 </td>
               </tr>
