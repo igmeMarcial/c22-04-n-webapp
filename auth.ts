@@ -25,6 +25,7 @@ export const {
     signIn: "/login",
     // error: "/auth/error",
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ token, session }) {
       if (session.user) {
@@ -61,7 +62,7 @@ export const {
 
       return token;
     },
-    async redirect({ baseUrl, url }) {
+    async redirect({ baseUrl }) {
         return baseUrl + '/';
        },
   },
