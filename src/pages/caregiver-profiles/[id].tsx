@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import CaregiverProfileDetails from '@/components/caregiver-profiles/CaregiverProfileDetails';
 
 const CareGiverProfilePage: React.FC = () => {
  
@@ -11,6 +12,7 @@ const CareGiverProfilePage: React.FC = () => {
   >
       <h1>Perfil del Cuidador
       </h1>
+      <CaregiverProfileDetails />
       <Link href="/caregiver-profiles" className='text-blue-500'>
         Volver a los Cuidadores
       </Link>
