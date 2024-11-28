@@ -1,9 +1,32 @@
+import React from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import "../app/globals.css";
 
-
-export default function Home() {
+const LandingPage: React.FC = () => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      main page
+    <div className="page-container">
+      <Header />
+      <main className="content">
+        <section className="hero">
+          <h2>Encuentra al mejor cuidador</h2>
+          <p>Conecta con personas apasionadas por cuidar a tu mascota.</p>
+        </section>
+        <section className="features">
+          <h2>¿Por qué elegirnos?</h2>
+          <p>Ofrecemos cuidadores confiables, con experiencia y pasión por los animales.</p>
+        </section>
+        <section className="about">
+          <h2>¡Conoce más sobre nosotros!</h2>
+          <p>
+            Nuestro equipo trabaja día a día para garantizar el mejor cuidado para tus mascotas. 
+            ¡Únete a nuestra comunidad!
+          </p>
+        </section>
+      </main>
+      <Footer />
     </div>
   );
-}
+};
+
+export default LandingPage;
