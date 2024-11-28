@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import CaregiverSchedule from './CaregiverSchedule';
 
 interface CaregiverProfile {
   id: number;
@@ -77,6 +78,7 @@ const CaregiverProfileDetails: React.FC = () => {
       <p><strong>Nombre:</strong> {profile.user.name}</p>
       <p><strong>Email:</strong> {profile.user.email}</p>
       <p><strong>Teléfono:</strong> {profile.user.phone || 'N/A'}</p>
+      <CaregiverSchedule />
     </div>
   );
 };
