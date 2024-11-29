@@ -18,6 +18,12 @@ interface CaregiverProfile {
     email: string;
     phone: string | null;
   };
+  availability: {
+    id: number;
+    weekday: number;
+    start_time: string;
+    end_time: string;
+  }[];
 }
 
 const CaregiverProfileDetails: React.FC = () => {
@@ -78,7 +84,7 @@ const CaregiverProfileDetails: React.FC = () => {
       <p><strong>Nombre:</strong> {profile.user.name}</p>
       <p><strong>Email:</strong> {profile.user.email}</p>
       <p><strong>Teléfono:</strong> {profile.user.phone || 'N/A'}</p>
-      <CaregiverSchedule />
+      <CaregiverSchedule availability={profile.availability} />
     </div>
   );
 };

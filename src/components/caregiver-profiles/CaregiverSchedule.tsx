@@ -19,6 +19,16 @@ const data = {
     ]
 };
 
+const formatTime = (dateTime: string): string => {
+    const date = new Date(dateTime); // Crea un objeto Date
+    let hours = date.getUTCHours(); // Obtén las horas en UTC
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0"); // Obtén los minutos en UTC
+    const period = hours >= 12 ? "PM" : "AM"; // Determina si es AM o PM
+    hours = hours % 12 || 12; // Convierte la hora a formato 12 horas, ajustando las 0 horas a 12
+    return `${hours}:${minutes} ${period}`; // Devuelve la hora formateada como HH:mm AM/PM
+};
+
+
 const weekdays = [
     "Domingo",
     "Lunes",
@@ -28,10 +38,19 @@ const weekdays = [
     "Viernes",
     "Sábado"
 ];
-// TODO: Cargar la data de base de datos
-const CaregiverSchedule: React.FC = () => {
+
+interface Availability {
+    weekday: number;
+    start_time: string;
+    end_time: string;
+}
+
+interface CaregiverScheduleProps {
+    availability: Availability[];
+}
+const CaregiverSchedule: React.FC<CaregiverScheduleProps> = ({ availability }) => {
     // Agrupa los horarios por día de la semana
-    const groupedAvailability = data.availability.reduce((acc: any, slot) => {
+    const groupedAvailability = availability.reduce((acc: any, slot) => {
         acc[slot.weekday] = acc[slot.weekday] || [];
         acc[slot.weekday].push(slot);
         return acc;
@@ -51,7 +70,7 @@ const CaregiverSchedule: React.FC = () => {
                                     key={index}
                                     className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium shadow-md"
                                 >
-                                    {slot.start_time} - {slot.end_time}
+                                    {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
                                 </span>
                             ))}
                         </div>
