@@ -72,7 +72,7 @@ const CreateBookingForm = () => {
         <div style={styles.inputGroup}>
           <label style={styles.label}>Owner ID:</label>
           <input
-            type="number"
+            type="string"
             name="owner_id"
             value={formData.owner_id}
             onChange={handleChange}
