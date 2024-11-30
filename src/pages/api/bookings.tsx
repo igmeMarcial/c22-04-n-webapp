@@ -18,7 +18,7 @@ interface Booking {
 
 // Definimos la interfaz para la creación de reservas
 interface BookingData {
-  owner_id: number;
+  owner_id: string;
   caregiver_id: number;
   pet_id: number;
   service_id: number;
@@ -105,22 +105,19 @@ export default async function handler(
       return res.status(400).json({ error: "Invalid total_price value." });
     }
 
-    // Crear el objeto `BookingData`
-    const bookingData: BookingData = {
-      owner_id: parseInt(owner_id, 10),
-      caregiver_id: parseInt(caregiver_id, 10),
-      pet_id: parseInt(pet_id, 10),
-      service_id: parseInt(service_id, 10),
-      start_time: new Date(start_time),
-      end_time: new Date(end_time),
-      status: parseInt(status, 10),
-      total_price: new Decimal(total_price),
-      additional_instructions: additional_instructions || null,
-    };
-
     try {
-      const newBooking = await prisma.bookings.create({
-        data: bookingData,
+      const newBooking = await prisma.booking.create({
+        data: {
+          owner: { connect: { id: owner_id } },
+          caregiver: { connect: { id: parseInt(caregiver_id, 10) } },
+          pet: { connect: { id: parseInt(pet_id, 10) } },
+          service: { connect: { id: parseInt(service_id, 10) } },
+          start_time: new Date(start_time),
+          end_time: new Date(end_time),
+          status: parseInt(status, 10),
+          total_price: new Decimal(total_price),
+          additional_instructions: additional_instructions || null,
+        },
       });
 
       return res.status(201).json(newBooking);
