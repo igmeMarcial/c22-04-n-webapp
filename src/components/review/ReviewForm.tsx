@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 interface ReviewFormProps {
-  bookingID: string; // ID de la reserva
+  bookingId: number;
 }
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
+const ReviewForm: React.FC<ReviewFormProps> = ({ bookingId }) => {
   const [formData, setFormData] = useState({
+    bookingId: bookingId,
     rating: 0, // Calificación (1-5)
     comment: '', // Comentario de la reseña
   });
@@ -36,7 +37,11 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ bookingID, ...formData }),
+        body: JSON.stringify({
+            bookingId,
+            rating: parseInt(formData.rating, 10), 
+            comment: formData.comment,
+          }),
       });
 
       if (!response.ok) {
@@ -46,9 +51,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
 
       setSuccess('Review submitted successfully!');
       setFormData({
+        bookingId: bookingId,
         rating: 0,
-        comment: '',
-        isAnonymous: false,
+        comment: '',    
       });
     } catch (err: any) {
       setError(err.message || 'Error submitting review');

@@ -8,7 +8,7 @@ const AddReviewPage: React.FC = () => {
       {/* El ID del usuario propietario de la mascota se pasa como prop
       al componente PetForm, ahora este ID es fijo, pero en una aplicación
       real debería obtenerse dinámicamente */}
-        <ReviewForm bookingID="1" />
+        <ReviewForm bookingId={1} />
 
 
     </div>
