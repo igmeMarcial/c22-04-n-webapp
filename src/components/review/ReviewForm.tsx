@@ -8,7 +8,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
   const [formData, setFormData] = useState({
     rating: 0, // Calificación (1-5)
     comment: '', // Comentario de la reseña
-    isAnonymous: false, // Si es anónima
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,6 +30,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
     setSuccess(null);
 
     try {
+        
       const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: {
@@ -96,20 +96,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ bookingID }) => {
           required
           className="mt-1 block w-full rounded border-gray-300 shadow-sm"
         ></textarea>
-      </div>
-
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          id="isAnonymous"
-          name="isAnonymous"
-          checked={formData.isAnonymous}
-          onChange={handleChange}
-          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-        />
-        <label htmlFor="isAnonymous" className="ml-2 text-sm font-medium">
-          Enviar como anónimo
-        </label>
       </div>
 
       <button
