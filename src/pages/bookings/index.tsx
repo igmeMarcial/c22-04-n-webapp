@@ -1,6 +1,6 @@
 import React from "react";
-import BookingList from "@/components/BookingList";
-import BookingForm from "@/components/BookingForm";
+import BookingsList from "@/components/booking/BookingsList";
+import BookingForm from "@/components/booking/CreateBookingForm";
 
 const Register: React.FC = () => {
   return (
@@ -8,6 +8,8 @@ const Register: React.FC = () => {
       <h1
       style={{ backgroundColor: "lightblue" }}
       >Booking Page</h1>
+      <BookingForm />
+      <BookingsList />
 
     </div>
   );

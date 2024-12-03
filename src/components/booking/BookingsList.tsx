@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { useEffect, useState } from "react";
 
 const BookingsList = () => {
@@ -49,6 +50,7 @@ const BookingsList = () => {
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800 font-semibold">End Time</th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800 font-semibold">Total Price</th>
               <th className="border border-gray-300 px-4 py-2 text-left text-gray-800 font-semibold">Status</th>
+              <th className="border border-gray-300 px-4 py-2 text-left text-gray-800 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -71,6 +73,14 @@ const BookingsList = () => {
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-gray-700">
                     {booking.status === 1 ? "Active" : "Completed"}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">
+                    <button className="text-blue-600 hover:underline">View</button>
+                    <button className="text-green-600 hover:underline ml-2">Edit</button>
+                    <Link href={`/reviews/${booking.id}`}
+                      className="text-purple-600 hover:underline ml-2">Review
+                    </Link>
+                    <button className="text-red-600 hover:underline ml-2">Delete</button>
                   </td>
                 </tr>
               ))
