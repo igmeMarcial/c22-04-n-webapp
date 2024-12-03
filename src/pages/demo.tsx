@@ -8,6 +8,8 @@ import { Alert } from "@/components/ui/Alert";
 import { Select } from "@/components/ui/Select";
 import { SocialLoginButton } from "@/components/auth/SocialLoginButton";
 import { Modal } from "@/components/ui/Modal";
+import { Input } from "@/components/ui/input";
+import ChromeIcon from "@/components/ui/icons/ChromeIcon";
 
 const DemoPage: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
@@ -25,17 +27,18 @@ const DemoPage: React.FC = () => {
       </Card>
 
       <div className="flex items-center space-x-4">
-        <Tooltip content="Este es un tooltip de ejemplo">
+        <Tooltip content="Lo cambie">
           <Badge variant="success">Tooltip Hover</Badge>
         </Tooltip>
         
         <Badge variant="warning">Advertencia</Badge>
+        <Badge variant="warning">Segunda advertencia</Badge>
         <Badge variant="error">Error</Badge>
       </div>
 
       <Alert 
         variant="success" 
-        title="Operación Exitosa" 
+        title="Operación Exitosa TITULO" 
         className="max-w-md"
       >
         Tu solicitud ha sido procesada correctamente.
@@ -51,6 +54,7 @@ const DemoPage: React.FC = () => {
         <option value="mx">México</option>
         <option value="ar">Argentina</option>
         <option value="cl">Chile</option>
+        <option value="co">Colombia</option>  
       </Select>
 
       <div className="mt-4">
@@ -65,37 +69,61 @@ const DemoPage: React.FC = () => {
       <Modal isOpen={isModalOpen} onClose={handleModalToggle}>
         <Card className="p-6 w-full max-w-md">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Registro</h2>
+            <h2 className="text-lg font-bold">Te damos la bienvenida nuevamente</h2>
           </div>
           <form className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Correo electrónico
-              </label>
-              <input 
+              <Input 
                 id="email" 
                 type="email" 
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                placeholder="tu-email@ejemplo.com" 
+                placeholder="
+                Correo electrónico"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Contraseña
-              </label>
-              <input 
+              <Input 
                 id="password" 
                 type="password" 
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                placeholder="********" 
+                placeholder="Contraseña"
               />
+            </div>
+            <div className="flex justify-between items-center">
+              <a 
+                href="#"
+                style={{ 
+                  color: "#6366F1",
+                  textDecoration: "none",
+                  fontSize: "0.875rem"
+                }}
+
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
             </div>
             <button 
               type="submit" 
               className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
             >
-              Registrarse
+              Inicar sesión
             </button>
+            {/* o iniciar sesión con Google o apple */}
+            <div className="flex items-center space-x-2">
+              <hr className="w-full border-gray-300" />
+              <span className="text-gray-500">o</span>
+              <hr className="w-full border-gray-300" />
+            </div>
+            <SocialLoginButton 
+              icon={ChromeIcon} 
+              provider="CAMBIALO A GOOGLE" 
+              onClick={() => alert("Iniciar sesión con Google")}
+            />
+            <SocialLoginButton 
+              icon={Globe} 
+              provider="Apple" 
+              onClick={() => alert("Iniciar sesión con Apple")}
+            />
           </form>
         </Card>
       </Modal>
