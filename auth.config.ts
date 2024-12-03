@@ -14,5 +14,8 @@ export default {
       from: process.env.EMAIL_FROM,
       // sendVerificationRequest,
     }),
+    
   ],
+    secret: process.env.NEXTAUTH_SECRET,
+
 } satisfies NextAuthConfig;
