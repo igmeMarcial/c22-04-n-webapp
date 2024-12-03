@@ -1,3 +1,4 @@
+"use client";
 import { Search, Bell } from "lucide-react";
 import { Input } from "./ui/input";
 import {
@@ -8,8 +9,12 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-const Navbar = () => {
+const HeaderDashboard = () => {
+  const session = useSession();
+
   return (
     <>
       <nav className="w-full bg-gray-300 px-4 py-3 fixed top-0 z-50">
@@ -69,19 +74,20 @@ const Navbar = () => {
             </button>
 
             <div className="w-10 h-10 rounded-full overflow-hidden">
-              <img
-                src="/lovable-uploads/65823581-f9b5-46f2-a65b-0342ad018796.png"
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+              <Avatar>
+                <AvatarImage
+                  src={session.data?.user.image ?? ""}
+                  alt="Profile"
+                />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
             </div>
           </div>
         </div>
       </nav>
-      {/* Spacer to prevent content from hiding behind fixed navbar */}
       <div className="h-[72px]"></div>
     </>
   );
 };
 
-export default Navbar;
+export default HeaderDashboard;

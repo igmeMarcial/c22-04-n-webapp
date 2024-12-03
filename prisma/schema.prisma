@@ -49,20 +49,21 @@ model Session {
 }
 
 model User {
-  id         String    @id @default(cuid())
-  email      String    @unique
-  password   String?
-  name       String
-  last_name  String
-  phone      String
-  address    String?
-  latitude   Decimal
-  longitude  Decimal
-  last_login DateTime?
-  role       UserRole  @default(USER)
-  image      String?
-  createdAt  DateTime  @default(now()) @map(name: "created_at")
-  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  name          String
+  last_name     String?
+  phone         String?
+  address       String?
+  latitude      Decimal?
+  longitude     Decimal?
+  last_login    DateTime?
+  role          UserRole  @default(USER)
+  image         String?
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
 
   accounts         Account[]
   sessions         Session[]

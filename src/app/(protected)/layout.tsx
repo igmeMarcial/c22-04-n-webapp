@@ -1,5 +1,5 @@
-import "../../globals.css";
-import Navbar from "@/components/HeaderAdmin";
+import "../globals.css";
+import HeaderDashboard from "@/components/HeaderAdmin";
 
 export default function AdminLayout({
   children,
@@ -8,7 +8,7 @@ export default function AdminLayout({
 }>) {
   return (
     <div>
-      <Navbar />
+      <HeaderDashboard />
       {children}
     </div>
   );

@@ -21,10 +21,10 @@ export default async function DashboardPage() {
       redirect("/dashboard");
       break;
     case UserRole.CARETAKER:
-      redirect("/admin/caretaker");
+      redirect("/dashboard/caretaker");
       break;
     case UserRole.OWNER:
-      redirect("/admin/owner");
+      redirect("/dashboard/owner");
       break;
     default:
       redirect("/");

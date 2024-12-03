@@ -118,14 +118,14 @@ const Header = () => {
                 status !== "loading" && (
                   <>
                     <Link
-                      href="/auth/signin"
+                      href="/login"
                       className="text-gray-600 hover:text-gray-900 text-sm"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Sign In
                     </Link>
                     <Link
-                      href="/auth/signin"
+                      href="/register"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <Button
