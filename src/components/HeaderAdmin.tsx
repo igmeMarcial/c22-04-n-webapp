@@ -1,5 +1,12 @@
 "use client";
-import { Search, Bell } from "lucide-react";
+import {
+  Search,
+  Bell,
+  LayoutDashboard,
+  Settings,
+  LogOut,
+  Lock,
+} from "lucide-react";
 import { Input } from "./ui/input";
 import {
   Dialog,
@@ -9,12 +16,28 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { useSession } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { signOut, useSession } from "next-auth/react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import Link from "next/link";
+import { UserAvatar } from "./user-avatar";
+import { useState } from "react";
 
 const HeaderDashboard = () => {
-  const session = useSession();
+  const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
 
+  if (!user)
+    return (
+      <div className="size-8 animate-pulse rounded-full border bg-muted" />
+    );
   return (
     <>
       <nav className="w-full bg-gray-300 px-4 py-3 fixed top-0 z-50">
@@ -41,7 +64,6 @@ const HeaderDashboard = () => {
             </div>
           </div>
 
-          {/* Actions Section */}
           <div className="flex items-center space-x-6">
             <Dialog>
               <DialogTrigger asChild>
@@ -73,14 +95,75 @@ const HeaderDashboard = () => {
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
 
-            <div className="w-10 h-10 rounded-full overflow-hidden">
-              <Avatar>
-                <AvatarImage
-                  src={session.data?.user.image ?? ""}
-                  alt="Profile"
-                />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
+            <div className="">
+              <DropdownMenu open={open} onOpenChange={setOpen}>
+                <DropdownMenuTrigger>
+                  <UserAvatar
+                    user={{
+                      name: user.name ?? "",
+                      image: user.image ?? null,
+                    }}
+                    className="size-8 border"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      {user.name && <p className="font-medium">{user.name}</p>}
+                      {user.email && (
+                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                          {user?.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+
+                  {user.role === "ADMIN" ? (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/admin"
+                        className="flex items-center space-x-2.5"
+                      >
+                        <Lock className="size-4" />
+                        <p className="text-sm">Admin</p>
+                      </Link>
+                    </DropdownMenuItem>
+                  ) : null}
+
+                  <DropdownMenuItem asChild>
+                    <Link href="/" className="flex items-center space-x-2.5">
+                      <LayoutDashboard className="size-4" />
+                      <p className="text-sm">Inicio</p>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/settings"
+                      className="flex items-center space-x-2.5"
+                    >
+                      <Settings className="size-4" />
+                      <p className="text-sm">Settings</p>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      signOut({
+                        callbackUrl: `${window.location.origin}/`,
+                      });
+                    }}
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <LogOut className="size-4" />
+                      <p className="text-sm">Log out </p>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
