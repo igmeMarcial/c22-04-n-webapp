@@ -26,14 +26,15 @@ interface Pet {
   updatedAt: string;
 }
 
-const PetsList = () => {
+interface PetListProps {
+  userId: string;
+}
+const PetsList: React.FC<PetListProps> = ({ userId }) => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //user id hardcoded for now
-  const userId = "cm495aac50000jthd339b9yx4";
-  
+
   useEffect(() => {
     const fetchPets = async () => {
       try {
