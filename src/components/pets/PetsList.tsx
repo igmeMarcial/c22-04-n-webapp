@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Pet {
   id: number;
@@ -30,6 +31,9 @@ const PetsList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  //user id hardcoded for now
+  const userId = "cm495aac50000jthd339b9yx4";
+  
   useEffect(() => {
     const fetchPets = async () => {
       try {
@@ -84,6 +88,19 @@ const PetsList = () => {
             <p className="mt-2 text-sm font-medium">{pet.name}</p>
           </div>
         ))}
+
+        {/* Botón para agregar una nueva mascota */}
+        <div className="flex justify-center items-center">
+          <Link href="/pets/register">
+            <div
+              className="relative w-[120px] h-[120px] rounded-full bg-white shadow-md flex items-center justify-center text-4xl font-bold text-gray-600 border border-gray-300 hover:bg-gray-100 transition duration-300"
+              aria-label="Agregar nueva mascota"
+            >
+              +
+            </div>
+            <p className="mt-2 text-sm font-medium">Agregar Mascota</p>
+          </Link>
+        </div>
       </div>
     </div>
   );
