@@ -80,7 +80,7 @@ const PetsList = () => {
   const cat = '/images/cat.jpg';
   const hammster = '/images/hammster.webp';
   const rabbit = '/images/rabbit.jpg';
-  const turtle = '/images/turtle.jpg|';
+  const turtle = '/images/turtle.jpg';
 
   return (
     <div className="overflow-x-auto">
