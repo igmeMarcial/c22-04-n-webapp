@@ -61,6 +61,9 @@ export const {
 
       return token;
     },
+     async redirect({ baseUrl }) {
+     return baseUrl + '/';
+    },
   },
   ...authConfig,
   // debug: process.env.NODE_ENV !== "production"
