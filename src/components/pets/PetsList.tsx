@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
-
+import Image from 'next/image';
 interface Pet {
   id: number;
   name: string;
@@ -74,9 +74,33 @@ const PetsList = () => {
     return <div>Error: {error}</div>;
   }
 
+
+  const bird = '/images/bird.jpg';
+  const dog = '/images/dog.webp';
+  const cat = '/images/cat.jpg';
+  const hammster = '/images/hammster.webp';
+  const rabbit = '/images/rabbit.jpg';
+  const turtle = '/images/turtle.jpg|';
+
   return (
     <div className="overflow-x-auto">
-      <h1 className="text-2xl font-bold mb-4">Lista de mascotas</h1>
+      <h1 className="text-2xl font-bold mb-4">Mis Mascotas</h1>
+    <div
+      style={{
+        width: '100px',
+        height: '100px',
+        overflow: 'hidden',
+        borderRadius: '16px', // Radio de las esquinas
+        position: 'relative',
+      }}
+    >
+      <Image
+        src={bird}
+        alt="Descripción de la imagen"
+        layout="fill"
+        objectFit="cover"
+      />
+    </div>
       {pets.length === 0 ? (
         <p>No pets available</p>
       ) : (
