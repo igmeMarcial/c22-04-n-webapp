@@ -70,10 +70,10 @@ const PetsList = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Mis Mascotas</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 p-4">
         {pets.map((pet) => (
           <div key={pet.id} className="text-center">
-            <div className="relative w-full pb-[100%] rounded-lg overflow-hidden">
+            <div className="relative w-[120px] h-[120px] rounded-lg overflow-hidden mx-auto">
               <Image
                 src={images[pet.species] || "/images/default.jpg"}
                 alt={pet.name}
