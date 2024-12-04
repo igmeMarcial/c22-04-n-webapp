@@ -37,8 +37,9 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
 
   useEffect(() => {
     const fetchPets = async () => {
+      setLoading(true);
       try {
-        const response = await fetch("/api/pets");
+        const response = await fetch(`/api/pets?userId=${userId}`);
         if (!response.ok) {
           throw new Error("Error fetching pets");
         }
@@ -50,9 +51,12 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
         setLoading(false);
       }
     };
-
-    fetchPets();
-  }, []);
+  
+    if (userId) {
+      fetchPets();
+    }
+  }, [userId]);
+  
 
   const images = {
     Bird: "/images/bird.jpg",
