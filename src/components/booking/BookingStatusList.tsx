@@ -77,6 +77,9 @@ const BookingStatusList = () => {
                       {booking.pet_name || "Sin nombre"} &mdash; {booking.service_name}
                     </p>
                     <p className="text-xs text-gray-500">
+                      Cuidador: {booking.caregiver_name || "Sin cuidador"}
+                    </p>
+                    <p className="text-xs text-gray-500">
                       {new Date(booking.start_time).toLocaleDateString("es-ES")} - $
                       {Number(booking.total_price).toFixed(2)}
                     </p>
