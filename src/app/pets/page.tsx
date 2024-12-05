@@ -1,15 +1,46 @@
-"use client"
+"use client";
 import React from "react";
 import PetsList from "../../components/pets/PetsList";
 
-
 const PetsPage: React.FC = () => {
   return (
-    <div>
-      {/* El ID del usuario propietario de la mascota se pasa como prop al componente PetsList, 
-      ahora este ID es fijo, pero en una aplicación real debería obtenerse dinámicamente */}
-      <PetsList userId="cm495aac50000jthd339b9yx4" />
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "1rem",
+        height: "100vh",
+        padding: "1rem",
+      }}
+    >
+      {/* Columna Izquierda */}
+      <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+        }}
+      ></div>
 
+      {/* Columna Central - Lista de Mascotas */}
+      <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <PetsList userId="cm495aac50000jthd339b9yx4" />
+      </div>
+
+      {/* Columna Derecha */}
+      <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+        }}
+      ></div>
     </div>
   );
 };
