@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 interface PetFormProps {
   userId: string; // ID del usuario propietario de la mascota
-  closeModal: () => void;
+  closeModal?: () => void;
 }
 
 const PetForm: React.FC<PetFormProps> = ({ userId, closeModal }) => {
