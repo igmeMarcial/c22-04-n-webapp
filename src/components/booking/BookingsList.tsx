@@ -72,7 +72,11 @@ const BookingsList = () => {
                     {`$${Number(booking.total_price).toFixed(2)}`}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-gray-700">
-                    {booking.status === 1 ? "Active" : "Completed"}
+                    {/* status 0 es agendado, status 1 es activo, status 2 es completado, status 3 es cancelado */}
+                    {booking.status === 0 && "Scheduled"}
+                    {booking.status === 1 && "Active"}
+                    {booking.status === 2 && "Completed"}
+                    {booking.status === 3 && "Cancelled"}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-gray-700">
                     <button className="text-blue-600 hover:underline">View</button>
