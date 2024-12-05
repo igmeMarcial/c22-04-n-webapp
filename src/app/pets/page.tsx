@@ -9,7 +9,7 @@ const PetsPage: React.FC = () => {
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
         gap: "1rem",
-        height: "100vh",
+        height: "calc(100vh - 116px)",
         padding: "1rem",
       }}
     >
