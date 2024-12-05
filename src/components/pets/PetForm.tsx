@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 interface PetFormProps {
   userId: string; // ID del usuario propietario de la mascota
@@ -20,15 +21,17 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const speciesOptions = ['Perro', 'Gato', 'Ave', 'Reptil', 'Otro'];
+  const speciesOptions = ['Perro', 'Gato', 'Ave', 'Reptil', 'Hamster', 'Conejo', 'Tortuga'];
   const breedOptions: { [key: string]: string[] } = {
     Perro: ['Labrador', 'Bulldog', 'Poodle', 'Chihuahua'],
     Gato: ['Siames', 'Persa', 'Maine Coon', 'Siberiano'],
     Ave: ['Loro', 'Canario', 'Periquito', 'Cacatúa'],
     Reptil: ['Iguana', 'Gecko', 'Serpiente', 'Tortuga'],
-    Otro: ['Desconocido'],
+    Hamster: ['Sirio', 'Roborovski', 'Campbell', 'Chino'],
+    Conejo: ['Holandés', 'Cabeza de León', 'Mini Lop', 'Rex'],
+    Tortuga: ['Mediterránea', 'Rusa', 'Estrella de la India', 'Orejas Rojas'],
   };
-
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -195,13 +198,14 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
           {loading ? 'Registrando...' : 'Registrar mascota'}
         </button>
 
+        <Link href="/pets">
         <button
-          type="button"
           className="w-full py-2 mt-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          onClick={() => console.log('Volver a la página anterior')}
         >
+
           Volver
         </button>
+        </Link>
       </form>
     </div>
   );
