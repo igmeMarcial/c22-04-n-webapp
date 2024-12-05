@@ -72,6 +72,7 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
     Conejo: "/images/rabbit.jpg",
     Tortuga: "/images/turtle.jpeg",
     Loro: "/images/parrot.jpg",
+    Ave: "/images/bird.jpg",
   };
 
   if (loading) {
