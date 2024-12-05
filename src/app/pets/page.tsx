@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import PetsList from "../../components/pets/PetsList";
+import BookingStatusList from "@/components/booking/BookingStatusList";
 
 const PetsPage: React.FC = () => {
   return (
@@ -20,7 +21,9 @@ const PetsPage: React.FC = () => {
           borderRadius: "8px",
           backgroundColor: "#f9f9f9",
         }}
-      ></div>
+      >
+        <BookingStatusList userId="cm495aac50000jthd339b9yx4" />
+      </div>
 
       {/* Columna Central - Lista de Mascotas */}
       <div
