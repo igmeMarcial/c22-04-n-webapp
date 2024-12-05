@@ -59,19 +59,19 @@ const BookingStatusList = () => {
         {Object.keys(statusLabels).map((status) => (
           <div
             key={status}
-            className="w-full md:w-1/2 lg:w-1/4 bg-white shadow-md rounded-lg p-4 flex flex-col"
+            className="w-full md:w-1/2 lg:w-[55%] xl:w-[40%] bg-white shadow-md rounded-lg p-4 flex flex-col"
           >
             <h2
               className={`text-lg font-semibold mb-4 text-center ${statusColors[status]}`}
             >
               {statusLabels[status]}
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-4">
               {groupedBookings[status]?.length > 0 ? (
                 groupedBookings[status].map((booking) => (
                   <div
                     key={booking.id}
-                    className="bg-gray-50 p-3 rounded-md shadow-sm"
+                    className="bg-gray-50 p-4 rounded-md shadow-sm"
                   >
                     <p className="text-sm font-medium truncate">
                       {booking.pet_name || "Sin nombre"} &mdash; {booking.service_name}
