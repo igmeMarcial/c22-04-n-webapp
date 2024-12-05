@@ -93,7 +93,7 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Mis Mascotas</h1>
+      <h1 className="text-2xl font-bold text-center pb-4">Mis Mascotas</h1>
       <div className="flex flex-wrap gap-4 justify-center">
         {pets.map((pet) => (
           <div
