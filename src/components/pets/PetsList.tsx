@@ -51,12 +51,12 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
         setLoading(false);
       }
     };
-  
+
     if (userId) {
       fetchPets();
     }
   }, [userId]);
-  
+
 
   const images = {
     Bird: "/images/bird.jpg",
@@ -84,9 +84,9 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
   }
 
   return (
-    <div>
+    <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Mis Mascotas</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-4">
         {pets.map((pet) => (
           <div key={pet.id} className="text-center">
             <div className="relative w-[120px] h-[120px] rounded-lg overflow-hidden mx-auto">
