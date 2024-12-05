@@ -3,9 +3,10 @@ import Link from 'next/link';
 
 interface PetFormProps {
   userId: string; // ID del usuario propietario de la mascota
+  closeModal: () => void;
 }
 
-const PetForm: React.FC<PetFormProps> = ({ userId }) => {
+const PetForm: React.FC<PetFormProps> = ({ userId, closeModal }) => {
   const [formData, setFormData] = useState({
     name: '',
     species: '',
@@ -198,14 +199,14 @@ const PetForm: React.FC<PetFormProps> = ({ userId }) => {
           {loading ? 'Registrando...' : 'Registrar mascota'}
         </button>
 
-        <Link href="/pets">
         <button
           className="w-full py-2 mt-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+          onClick={closeModal}
         >
 
           Volver
         </button>
-        </Link>
+
       </form>
     </div>
   );

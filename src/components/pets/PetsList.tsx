@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import PetForm from "@/components/pets/PetForm";
 
 interface Pet {
   id: number;
@@ -30,6 +31,13 @@ interface PetListProps {
   userId: string;
 }
 const PetsList: React.FC<PetListProps> = ({ userId }) => {
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
+
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,18 +116,29 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
 
         {/* Botón para agregar una nueva mascota */}
         <div className="flex flex-col items-center min-w-[120px] max-w-[150px]">
-          <Link href="/pets/register">
+
             <div
               className="relative w-[120px] h-[120px] rounded-full bg-white shadow-md flex items-center justify-center text-4xl font-bold text-gray-600 border border-gray-300 hover:bg-gray-100 transition duration-300"
               aria-label="Agregar nueva mascota"
+              onClick={openModal}
             >
               +
             </div>
             <p className="mt-2 text-sm font-medium">Agregar Mascota</p>
-          </Link>
         </div>
+        {/* Modal */}
+        {isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+
+              {/* Contenido del Modal */}
+              <PetForm userId={userId} closeModal={closeModal} />
+
+          </div>
+        )}
       </div>
+
     </div>
+
 
   );
 };
