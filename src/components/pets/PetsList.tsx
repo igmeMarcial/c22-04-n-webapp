@@ -63,7 +63,7 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
     if (userId) {
       fetchPets();
     }
-  }, [userId]);
+  }, [userId, isOpen]);
 
 
   const images = {
