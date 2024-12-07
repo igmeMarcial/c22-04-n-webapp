@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
 
 interface Caregiver {
   id: number;
@@ -69,65 +68,37 @@ const CaregiversList = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center mt-4">Cargando...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
   }
 
+  const weekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "1rem",
-        height: "calc(100vh - 126px)",
-        padding: "1rem",
-      }}
-    >
-
-
-      {/* Columna Derecha: Lista de cuidadores */}
-      <div
-        style={{
-          border: "2px solid #ddd",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-          padding: "1rem",
-          overflowY: "auto",
-        }}
-      >
-        <h2 className="text-xl font-bold mb-4">Lista de cuidadores</h2>
+    <div className="grid grid-cols-3 gap-4 h-[calc(100vh-126px)] p-4">
+      {/* Columna izquierda: Lista de cuidadores */}
+      <div className="col-span-1 border rounded-lg bg-white shadow p-4 overflow-y-auto">
+        <h2 className="text-2xl font-bold mb-4">Lista de cuidadores</h2>
         {caregivers.map((caregiver) => (
           <div
             key={caregiver.id}
-            style={{
-              padding: "0.5rem",
-              borderBottom: "1px solid #ddd",
-              cursor: "pointer",
-            }}
+            className="p-4 border-b hover:bg-gray-100 cursor-pointer"
             onClick={() => setSelectedCaregiver(caregiver)}
           >
-            <p><strong>{caregiver.user.name} {caregiver.user.last_name}</strong></p>
-            <p>{caregiver.user.email}</p>
+            <p className="font-semibold">{caregiver.user.name} {caregiver.user.last_name}</p>
+            <p className="text-sm text-gray-500">{caregiver.user.email}</p>
           </div>
         ))}
-
-        
       </div>
-            {/* Columna Izquierda: Detalles del cuidador */}
-            <div
-        style={{
-          border: "2px solid #ddd",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-          padding: "1rem",
-        }}
-      >
+
+      {/* Columna derecha: Detalles del cuidador */}
+      <div className="col-span-2 border rounded-lg bg-white shadow p-4">
         {selectedCaregiver ? (
           <div>
-            <h2 className="text-xl font-bold mb-4">Detalles del cuidador</h2>
+            <h2 className="text-2xl font-bold mb-4">Detalles del cuidador</h2>
             <p><strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</p>
             <p><strong>Email:</strong> {selectedCaregiver.user.email}</p>
             <p><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
@@ -135,9 +106,30 @@ const CaregiversList = () => {
             <p><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
             <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
             <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
+
+            {/* Tabla de disponibilidad */}
+            <h3 className="text-xl font-semibold mt-6 mb-2">Horarios disponibles</h3>
+            <table className="w-full border-collapse border text-sm">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border p-2">Día</th>
+                  <th className="border p-2">Inicio</th>
+                  <th className="border p-2">Fin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedCaregiver.availability.map((slot) => (
+                  <tr key={slot.id} className="text-center">
+                    <td className="border p-2">{weekdays[slot.weekday]}</td>
+                    <td className="border p-2">{slot.start_time}</td>
+                    <td className="border p-2">{slot.end_time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
-          <p>Selecciona un cuidador para ver los detalles</p>
+          <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
         )}
       </div>
     </div>
