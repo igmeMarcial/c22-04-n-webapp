@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Button } from "../ui/button";
 
 interface Caregiver {
@@ -36,17 +35,17 @@ interface Caregiver {
   availability: Array<{
     id: number;
     caregiverId: number;
-    weekday: number; // 0: Sunday, 1: Monday, etc.
-    start_time: string; // ISO date string
-    end_time: string; // ISO date string
+    weekday: number;
+    start_time: string;
+    end_time: string;
   }>;
   createdAt: string;
   updatedAt: string;
 }
 
-
 const CaregiversList = () => {
   const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
+  const [selectedCaregiver, setSelectedCaregiver] = useState<Caregiver | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,7 +68,6 @@ const CaregiversList = () => {
     fetchCaregivers();
   }, []);
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -79,86 +77,70 @@ const CaregiversList = () => {
   }
 
   return (
-
-    <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "2fr 1fr 0fr",
-      gap: "1rem",
-      height: "calc(100vh - 126px)",
-      padding: "1rem",
-    }}
-  >
-    {/* Columna Izquierda */}
     <div
       style={{
-        border: "2px solid #ddd",
-        borderRadius: "8px",
-        backgroundColor: "#f9f9f9",
-      }}
-    >
-    <div className="overflow-x-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Lista de cuidadores</h1>
-      {caregivers.length === 0 ? (
-        <p>No caregiver profiles available</p>
-      ) : (
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 border-b">Nombre</th>
-              <th className="px-4 py-2 border-b">Correo</th>
-              <th className="px-4 py-2 border-b">Teléfono</th>
-              <th className="px-4 py-2 border-b">Estatus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {caregivers.map((caregiver) => (
-              <tr key={caregiver.id} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border-b">
-                  {caregiver.user.name} {caregiver.user.last_name}
-                </td>
-                <td className="px-4 py-2 border-b">{caregiver.user.email}</td>
-                <td className="px-4 py-2 border-b">{caregiver.user.phone || "No especificado"}</td>
-                <td className="px-4 py-2 border-b">
-                  {caregiver.is_active ? "Activo" : "Inactivo"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-    </div>
-
-    {/* Columna Central */}
-    <div
-      style={{
-        border: "2px solid #ddd",
-        borderRadius: "8px",
-        backgroundColor: "#f9f9f9",
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "1rem",
+        height: "calc(100vh - 126px)",
+        padding: "1rem",
       }}
     >
 
+
+      {/* Columna Derecha: Lista de cuidadores */}
+      <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+          padding: "1rem",
+          overflowY: "auto",
+        }}
+      >
+        <h2 className="text-xl font-bold mb-4">Lista de cuidadores</h2>
+        {caregivers.map((caregiver) => (
+          <div
+            key={caregiver.id}
+            style={{
+              padding: "0.5rem",
+              borderBottom: "1px solid #ddd",
+              cursor: "pointer",
+            }}
+            onClick={() => setSelectedCaregiver(caregiver)}
+          >
+            <p><strong>{caregiver.user.name} {caregiver.user.last_name}</strong></p>
+            <p>{caregiver.user.email}</p>
+          </div>
+        ))}
+
+        
+      </div>
+            {/* Columna Izquierda: Detalles del cuidador */}
+            <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+          padding: "1rem",
+        }}
+      >
+        {selectedCaregiver ? (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Detalles del cuidador</h2>
+            <p><strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</p>
+            <p><strong>Email:</strong> {selectedCaregiver.user.email}</p>
+            <p><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
+            <p><strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}</p>
+            <p><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
+            <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
+            <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
+          </div>
+        ) : (
+          <p>Selecciona un cuidador para ver los detalles</p>
+        )}
+      </div>
     </div>
-
-    {/* Columna Derecha */}
-    <div
-      style={{
-        border: "2px solid #ddd",
-        borderRadius: "8px",
-        backgroundColor: "#f9f9f9",
-      }}
-    ></div>
-
-    <Button
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      onClick={() => {console.log(caregivers )}
-      }
-    >
-      Console Log fetch
-    </Button>
-  </div>
-
   );
 };
 
