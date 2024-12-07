@@ -16,7 +16,7 @@ export default async function PrivateLayout({ children }) {
           <Sidebar />
           <main className="flex-1 p-1">{children}</main>
         </div>
-        <Footer />
+
       </div>
     </UserProvider>
   );
