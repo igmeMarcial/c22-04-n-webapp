@@ -142,7 +142,7 @@ const CaregiversList = () => {
                 <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow mb-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4">
                   <p className="font-bold text-lg">{rate.service.name}</p>
                   <p className="text-sm text-gray-500">{rate.service.description}</p>
-                  <p><strong>Precio:</strong> ${rate.base_price}</p>
+                  <p><strong>Precio por hora:</strong> ${rate.base_price}</p>
                   <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
                 </div>
               ))}
