@@ -53,7 +53,11 @@ const getCaregivers = async (req: NextApiRequest, res: NextApiResponse) => {
       include: {
         user: true, // Incluye la información del usuario asociado
         availability: true, // Incluye la disponibilidad
-        rates: true, // Incluye las tarifas
+        rates: {
+          include: {
+            service: true,
+          },
+        }
       },
     });
     return res.status(200).json(caregivers);
