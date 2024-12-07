@@ -1,21 +1,49 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface Caregiver {
   id: number;
+  userId: string;
+  experience: string | null;
+  description: string;
+  coverage_radius_KM: number;
+  verified: number;
+  verification_date: string | null;
+  average_rating: string | null;
+  total_reviews: number;
   user: {
-    id: number;
+    id: string;
+    email: string;
+    emailVerified: string | null;
+    password: string;
     name: string;
     last_name: string;
-    email: string;
     phone: string | null;
+    address: string | null;
+    latitude: string | null;
+    longitude: string | null;
+    last_login: string | null;
+    role: string;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+    stripeCustomerId: string | null;
+    stripeSubscriptionId: string | null;
+    stripePriceId: string | null;
+    stripeCurrentPeriodEnd: string | null;
   };
-  coverage_radius_KM: number;
-  experience: string | null;
-  is_active: boolean;
+  availability: Array<{
+    id: number;
+    caregiverId: number;
+    weekday: number; // 0: Sunday, 1: Monday, etc.
+    start_time: string; // ISO date string
+    end_time: string; // ISO date string
+  }>;
   createdAt: string;
   updatedAt: string;
 }
+
 
 const CaregiversList = () => {
   const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
@@ -66,7 +94,25 @@ const CaregiversList = () => {
   }
 
   return (
-    <div className="overflow-x-auto">
+
+    <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "2fr 1fr 0fr",
+      gap: "1rem",
+      height: "calc(100vh - 126px)",
+      padding: "1rem",
+    }}
+  >
+    {/* Columna Izquierda */}
+    <div
+      style={{
+        border: "2px solid #ddd",
+        borderRadius: "8px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
+    <div className="overflow-x-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Lista de cuidadores</h1>
       {caregivers.length === 0 ? (
         <p>No caregiver profiles available</p>
@@ -118,6 +164,37 @@ const CaregiversList = () => {
         </table>
       )}
     </div>
+    </div>
+
+    {/* Columna Central */}
+    <div
+      style={{
+        border: "2px solid #ddd",
+        borderRadius: "8px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
+
+    </div>
+
+    {/* Columna Derecha */}
+    <div
+      style={{
+        border: "2px solid #ddd",
+        borderRadius: "8px",
+        backgroundColor: "#f9f9f9",
+      }}
+    ></div>
+
+    <Button
+      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      onClick={() => {console.log(caregivers )}
+      }
+    >
+      Console Log fetch
+    </Button>
+  </div>
+
   );
 };
 
