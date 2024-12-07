@@ -125,14 +125,17 @@ const CaregiversList = () => {
 
             {/* Servicios que ofrece y tarifas */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Servicios y tarifas</h3>
-            {selectedCaregiver.rates.map((rate) => (
-              <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow mb-4">
-                <p className="font-bold text-lg">{rate.service.name}</p>
-                <p className="text-sm text-gray-500">{rate.service.description}</p>
-                <p><strong>Precio base:</strong> ${rate.base_price}</p>
-                <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
-              </div>
-            ))}
+            <div className="flex flex-wrap gap-4">
+              {selectedCaregiver.rates.map((rate) => (
+                <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow mb-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4">
+                  <p className="font-bold text-lg">{rate.service.name}</p>
+                  <p className="text-sm text-gray-500">{rate.service.description}</p>
+                  <p><strong>Precio:</strong> ${rate.base_price}</p>
+                  <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
+                </div>
+              ))}
+            </div>
+
 
             {/* Tabla de disponibilidad */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
