@@ -107,9 +107,9 @@ const CaregiversList = () => {
             <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
             <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
 
-            {/* Horarios disponibles */}
+            {/* Tabla de disponibilidad */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
-            <div className="space-y-4">
+            <div className="flex flex-wrap gap-4">
               {weekdays.map((day, index) => {
                 const slots = selectedCaregiver.availability.filter(
                   (slot) => slot.weekday === index
@@ -118,8 +118,8 @@ const CaregiversList = () => {
                 if (slots.length === 0) return null;
 
                 return (
-                  <div key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                    <p className="font-bold text-lg mb-2">{day}</p>
+                  <div key={index} className="flex flex-col items-start p-4 bg-gray-100 rounded-lg shadow">
+                    <p className="font-bold text-lg mb-2 text-center w-full">{day}</p>
                     <div className="flex flex-wrap gap-2">
                       {slots.map((slot) => (
                         <span
@@ -128,12 +128,10 @@ const CaregiversList = () => {
                         >
                           {new Date(slot.start_time).toLocaleTimeString([], {
                             hour: '2-digit',
-                            minute: '2-digit'
-                          })}{" "}
-                          -{" "}
-                          {new Date(slot.end_time).toLocaleTimeString([], {
+                            minute: '2-digit',
+                          })} - {new Date(slot.end_time).toLocaleTimeString([], {
                             hour: '2-digit',
-                            minute: '2-digit'
+                            minute: '2-digit',
                           })}
                         </span>
                       ))}
@@ -142,7 +140,6 @@ const CaregiversList = () => {
                 );
               })}
             </div>
-
           </div>
         ) : (
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
