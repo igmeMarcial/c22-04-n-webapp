@@ -23,19 +23,22 @@ const Sidebar: React.FC = () => {
             <Link href="/dashboard" style={{ textDecoration: "none", color: "#333" }}>
                 Dashboard
             </Link>
-            <Link href="/pets" style={{ textDecoration: "none", color: "#333" }}>
+            <Link href="/private/pets" style={{ textDecoration: "none", color: "#333" }}>
                 Perfil Dueño
             </Link>
-            <Link href="/profile" style={{ textDecoration: "none", color: "#333" }}>
+            <Link href="/private/caregivers" style={{ textDecoration: "none", color: "#333" }}>
+                Buscar Cuidador
+            </Link>
+            <Link href="/private/profile" style={{ textDecoration: "none", color: "#333" }}>
                 Perfil Cuidador
             </Link>
-            <Link href="/messages" style={{ textDecoration: "none", color: "#333" }}>
+            <Link href="/private/messages" style={{ textDecoration: "none", color: "#333" }}>
                 Mensajes
             </Link>
-            <Link href="/settings" style={{ textDecoration: "none", color: "#333" }}>
+            <Link href="/private/settings" style={{ textDecoration: "none", color: "#333" }}>
                 Configuración
             </Link>
-            <Link href="/help" style={{ textDecoration: "none", color: "#333" }}>
+            <Link href="/private/help" style={{ textDecoration: "none", color: "#333" }}>
                 Ayuda
             </Link>
         </div>
