@@ -115,6 +115,8 @@ const CaregiversList = () => {
         {selectedCaregiver ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Detalles del cuidador</h2>
+
+            {/* Información del cuidador */}
             <div className="p-6 max-w-xl mx-auto bg-white shadow-lg rounded-lg">
               <h3 className="text-2xl font-semibold mb-6">Información del Cuidador</h3>
               <div className="space-y-4">
