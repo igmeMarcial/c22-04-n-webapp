@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import PetsList from "../../components/pets/PetsList";
+import PetsList from "../../../components/pets/PetsList";
 import BookingStatusList from "@/components/booking/BookingStatusList";
 
 const PetsPage: React.FC = () => {

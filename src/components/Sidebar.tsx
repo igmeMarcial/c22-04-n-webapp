@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useUser } from "@/context/UserContext";
 
 const Sidebar: React.FC = () => {
+    const { user, setUser } = useUser();
     return (
         <div
             style={{
@@ -17,6 +19,7 @@ const Sidebar: React.FC = () => {
             }}
         >
             <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>Navegación</h2>
+            <h3 style={{ fontSize: "1rem", fontWeight: "bold" }}>Usuario: {user?.name}</h3>
             <Link href="/dashboard" style={{ textDecoration: "none", color: "#333" }}>
                 Dashboard
             </Link>
