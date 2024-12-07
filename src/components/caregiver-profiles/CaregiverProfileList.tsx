@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreateBookingForm from "../booking/CreateBookingForm";
 
 interface Caregiver {
   id: number;
@@ -202,32 +203,10 @@ const CaregiversList = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-bold mb-4">Agendar servicio</h2>
-            <p className="text-gray-500 mb-4">Selecciona la fecha y hora para el servicio</p>
-            <input
-              type="date"
-              className="w-full p-2 border rounded-lg mb-4"
-            />
-            <input
-              type="time"
-              className="w-full p-2 border rounded-lg mb-4"
-            />
-            <button
-              onClick={closeModal}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Agendar
-            </button>
-            <button
-              onClick={closeModal}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 ml-2"        
-            >
-              Cancelar
-            </button>
-
-            </div>
-            </div>
-          )}
+            <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} />
+          </div>
+          </div>
+      )}
     </div>
   );
 };
