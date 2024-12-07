@@ -61,6 +61,9 @@ const CaregiversList = () => {
   const [selectedCaregiver, setSelectedCaregiver] = useState<Caregiver | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const fetchCaregivers = async () => {
@@ -124,6 +127,13 @@ const CaregiversList = () => {
             <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
             <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
 
+            {/* Botón para abrir el modal */}
+            <button
+              onClick={openModal}
+              className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Agendar servicio
+            </button>
             {/* Servicios que ofrece y tarifas */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Servicios y tarifas</h3>
             <div className="flex flex-wrap gap-4">
@@ -185,7 +195,39 @@ const CaregiversList = () => {
         ) : (
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
         )}
+
+        
       </div>
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-96">
+            <h2 className="text-2xl font-bold mb-4">Agendar servicio</h2>
+            <p className="text-gray-500 mb-4">Selecciona la fecha y hora para el servicio</p>
+            <input
+              type="date"
+              className="w-full p-2 border rounded-lg mb-4"
+            />
+            <input
+              type="time"
+              className="w-full p-2 border rounded-lg mb-4"
+            />
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Agendar
+            </button>
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 ml-2"        
+            >
+              Cancelar
+            </button>
+
+            </div>
+            </div>
+          )}
     </div>
   );
 };
