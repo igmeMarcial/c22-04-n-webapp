@@ -156,7 +156,7 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+    <div className="max-w-6xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-4">Agendar Servicio</h2>
       {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
