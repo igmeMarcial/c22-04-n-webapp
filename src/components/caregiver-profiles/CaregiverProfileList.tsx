@@ -38,6 +38,20 @@ interface Caregiver {
     start_time: string;
     end_time: string;
   }>;
+  rates: Array<{
+    id: number;
+    caregiverId: number;
+    serviceId: number;
+    base_price: string;
+    additional_hour_price: string;
+    service: {
+      id: number;
+      name: string;
+      description: string;
+      min_duration: number;
+      max_duration: number;
+    };
+  }>;
   createdAt: string;
   updatedAt: string;
 }
