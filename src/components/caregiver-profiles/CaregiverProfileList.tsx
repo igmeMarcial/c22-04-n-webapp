@@ -77,6 +77,8 @@ const CaregiversList = () => {
 
   const weekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
+
+
   return (
     <div className="grid grid-cols-3 gap-4 h-[calc(100vh-126px)] p-4">
       {/* Columna izquierda: Lista de cuidadores */}
@@ -127,15 +129,19 @@ const CaregiversList = () => {
                           key={slot.id}
                           className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full mb-2"
                         >
-                          {new Date(slot.start_time).toLocaleTimeString([], {
+                          {new Intl.DateTimeFormat("en-US", {
                             hour: "2-digit",
                             minute: "2-digit",
-                          })}{" "}
+                            hour12: true,
+                            timeZone: "UTC", // Asegura que no se convierta a la zona horaria local
+                          }).format(new Date(slot.start_time))}{" "}
                           -{" "}
-                          {new Date(slot.end_time).toLocaleTimeString([], {
+                          {new Intl.DateTimeFormat("en-US", {
                             hour: "2-digit",
                             minute: "2-digit",
-                          })}
+                            hour12: true,
+                            timeZone: "UTC", // Asegura que no se convierta a la zona horaria local
+                          }).format(new Date(slot.end_time))}
                         </span>
                       ))
                     ) : (
