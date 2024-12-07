@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 
 interface Caregiver {
   id: number;
@@ -91,7 +91,27 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  // Calculate total price based on selected service and time range
+  useEffect(() => {
+    if (formData.start_time && formData.end_time && formData.service_id) {
+      const start = new Date(formData.start_time);
+      const end = new Date(formData.end_time);
+      const hours = Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60);
+
+      const selectedService = caregiver.rates.find(
+        (rate) => rate.service.id.toString() === formData.service_id
+      );
+
+      if (selectedService) {
+        const totalPrice = (hours * parseFloat(selectedService.base_price)).toFixed(2);
+        setFormData((prev) => ({ ...prev, total_price: totalPrice }));
+      }
+    }
+  }, [formData.start_time, formData.end_time, formData.service_id, caregiver.rates]);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -137,11 +157,11 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold text-center mb-4">Create Booking</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Agendar Servicio</h2>
       {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-        <div>
+        <div className="col-span-2">
           <label className="block text-sm font-medium mb-1">Seleccionar Mascota</label>
           <input
             type="text"
@@ -153,7 +173,7 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Service</label>
+          <label className="block text-sm font-medium mb-1">Servicio</label>
           <select
             name="service_id"
             value={formData.service_id}
@@ -191,16 +211,14 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
             required
           />
         </div>
-        <div>
+        <div className="col-span-2">
           <label className="block text-sm font-medium mb-1">Precio Total</label>
           <input
-            type="number"
-            step="0.01"
+            type="text"
             name="total_price"
             value={formData.total_price}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
+            readOnly
+            className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
           />
         </div>
         <div className="col-span-2">
@@ -217,13 +235,13 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
           >
-            Pedir Servicio
+            Confirmar Reserva
           </button>
         </div>
       </form>
       <button
         onClick={onClose}
-        className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 mt-4"
+        className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 mt-4"
       >
         Cancelar
       </button>
