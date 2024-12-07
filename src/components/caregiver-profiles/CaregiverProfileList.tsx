@@ -123,6 +123,17 @@ const CaregiversList = () => {
             <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
             <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
 
+            {/* Servicios que ofrece y tarifas */}
+            <h3 className="text-xl font-semibold mt-6 mb-4">Servicios y tarifas</h3>
+            {selectedCaregiver.rates.map((rate) => (
+              <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow mb-4">
+                <p className="font-bold text-lg">{rate.service.name}</p>
+                <p className="text-sm text-gray-500">{rate.service.description}</p>
+                <p><strong>Precio base:</strong> ${rate.base_price}</p>
+                <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
+              </div>
+            ))}
+
             {/* Tabla de disponibilidad */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
             <div className="grid grid-cols-7 gap-4">
