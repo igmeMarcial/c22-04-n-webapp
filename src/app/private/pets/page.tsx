@@ -33,7 +33,7 @@ const PetsPage: React.FC = () => {
           backgroundColor: "#f9f9f9",
         }}
       >
-        <PetsList userId="cm495aac50000jthd339b9yx4" />
+        <PetsList />
       </div>
 
       {/* Columna Derecha */}
