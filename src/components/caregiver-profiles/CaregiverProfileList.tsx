@@ -69,21 +69,6 @@ const CaregiversList = () => {
     fetchCaregivers();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este perfil de cuidador?")) {
-      try {
-        const response = await fetch(`/api/caregiver-profiles/${id}`, {
-          method: "DELETE",
-        });
-        if (!response.ok) {
-          throw new Error("Error deleting caregiver profile");
-        }
-        setCaregivers((prev) => prev.filter((caregiver) => caregiver.id !== id));
-      } catch (error: any) {
-        alert("Error eliminando el perfil: " + error.message);
-      }
-    }
-  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -124,7 +109,6 @@ const CaregiversList = () => {
               <th className="px-4 py-2 border-b">Correo</th>
               <th className="px-4 py-2 border-b">Teléfono</th>
               <th className="px-4 py-2 border-b">Estatus</th>
-              <th className="px-4 py-2 border-b">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -137,26 +121,6 @@ const CaregiversList = () => {
                 <td className="px-4 py-2 border-b">{caregiver.user.phone || "No especificado"}</td>
                 <td className="px-4 py-2 border-b">
                   {caregiver.is_active ? "Activo" : "Inactivo"}
-                </td>
-                <td className="px-4 py-2 border-b space-x-2">
-                  <Link
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    href={`/caregiver-profiles/${caregiver.id}`}
-                  >
-                    Detalles
-                  </Link>
-                  <Link
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                    href={`/caregiver-profiles/edit/${caregiver.id}`}
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                    onClick={() => handleDelete(caregiver.id)}
-                  >
-                    Eliminar
-                  </button>
                 </td>
               </tr>
             ))}
