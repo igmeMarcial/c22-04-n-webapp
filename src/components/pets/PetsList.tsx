@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PetForm from "@/components/pets/PetForm";
+import { useUser } from "@/context/UserContext";
+
 
 interface Pet {
   id: number;
@@ -27,10 +29,8 @@ interface Pet {
   updatedAt: string;
 }
 
-interface PetListProps {
-  userId: string;
-}
-const PetsList: React.FC<PetListProps> = ({ userId }) => {
+const PetsList: React.FC = () => {
+  const { user, setUser } = useUser();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +47,7 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
     const fetchPets = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/pets?userId=${userId}`);
+        const response = await fetch(`/api/pets?userId=${user?.id}`);
         if (!response.ok) {
           throw new Error("Error fetching pets");
         }
@@ -60,10 +60,10 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
       }
     };
 
-    if (userId) {
+    if (user.id) {
       fetchPets();
     }
-  }, [userId, isOpen]);
+  }, [user, isOpen]);
 
 
   const images = {
@@ -131,7 +131,7 @@ const PetsList: React.FC<PetListProps> = ({ userId }) => {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 
               {/* Contenido del Modal */}
-              <PetForm userId={userId} closeModal={closeModal} />
+              <PetForm closeModal={closeModal} />
 
           </div>
         )}

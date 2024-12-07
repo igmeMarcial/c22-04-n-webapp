@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useUser } from "@/context/UserContext";
 
 interface PetFormProps {
-  userId: string; // ID del usuario propietario de la mascota
   closeModal?: () => void;
 }
 
-const PetForm: React.FC<PetFormProps> = ({ userId, closeModal }) => {
+const PetForm: React.FC<PetFormProps> = ({ closeModal }) => {
+  const { user, setUser } = useUser();
   const [formData, setFormData] = useState({
     name: '',
     species: '',
@@ -53,7 +54,10 @@ const PetForm: React.FC<PetFormProps> = ({ userId, closeModal }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId, ...formData }),
+        body: JSON.stringify({ 
+          userId: user.id, // or whichever property name makes sense
+          ...formData 
+        })
       });
 
       if (!response.ok) {
