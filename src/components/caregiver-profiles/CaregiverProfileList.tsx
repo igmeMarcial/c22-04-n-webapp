@@ -107,26 +107,42 @@ const CaregiversList = () => {
             <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
             <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
 
-            {/* Tabla de disponibilidad */}
-            <h3 className="text-xl font-semibold mt-6 mb-2">Horarios disponibles</h3>
-            <table className="w-full border-collapse border text-sm">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border p-2">Día</th>
-                  <th className="border p-2">Inicio</th>
-                  <th className="border p-2">Fin</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedCaregiver.availability.map((slot) => (
-                  <tr key={slot.id} className="text-center">
-                    <td className="border p-2">{weekdays[slot.weekday]}</td>
-                    <td className="border p-2">{slot.start_time}</td>
-                    <td className="border p-2">{slot.end_time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {/* Horarios disponibles */}
+            <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
+            <div className="space-y-4">
+              {weekdays.map((day, index) => {
+                const slots = selectedCaregiver.availability.filter(
+                  (slot) => slot.weekday === index
+                );
+
+                if (slots.length === 0) return null;
+
+                return (
+                  <div key={index} className="p-4 bg-gray-100 rounded-lg shadow">
+                    <p className="font-bold text-lg mb-2">{day}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {slots.map((slot) => (
+                        <span
+                          key={slot.id}
+                          className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full"
+                        >
+                          {new Date(slot.start_time).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}{" "}
+                          -{" "}
+                          {new Date(slot.end_time).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
           </div>
         ) : (
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
