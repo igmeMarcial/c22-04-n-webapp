@@ -1,11 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 
-const CreateBookingForm = () => {
-  const [formData, setFormData] = useState({
+interface Caregiver {
+  id: number;
+  userId: string;
+  experience: string | null;
+  description: string;
+  coverage_radius_KM: number;
+  verified: number;
+  verification_date: string | null;
+  average_rating: string | null;
+  total_reviews: number;
+  user: {
+    id: string;
+    email: string;
+    emailVerified: string | null;
+    password: string;
+    name: string;
+    last_name: string;
+    phone: string | null;
+    address: string | null;
+    latitude: string | null;
+    longitude: string | null;
+    last_login: string | null;
+    role: string;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+    stripeCustomerId: string | null;
+    stripeSubscriptionId: string | null;
+    stripePriceId: string | null;
+    stripeCurrentPeriodEnd: string | null;
+  };
+  availability: Array<{
+    id: number;
+    caregiverId: number;
+    weekday: number;
+    start_time: string;
+    end_time: string;
+  }>;
+  rates: Array<{
+    id: number;
+    caregiverId: number;
+    serviceId: number;
+    base_price: string;
+    additional_hour_price: string;
+    service: {
+      id: number;
+      name: string;
+      description: string;
+      min_duration: number;
+      max_duration: number;
+    };
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FormData {
+  owner_id: string;
+  caregiver_id: string;
+  pet_id: string;
+  service_id: string;
+  start_time: string;
+  end_time: string;
+  status: number;
+  total_price: string;
+  additional_instructions: string;
+}
+
+interface Props {
+  caregiver: Caregiver;
+  onClose: () => void;
+}
+
+const CreateBookingForm = ({ caregiver, onClose }: Props) => {
+  const [formData, setFormData] = useState<FormData>({
     owner_id: "",
-    caregiver_id: "",
+    caregiver_id: caregiver.id.toString(),
     pet_id: "",
     service_id: "",
     start_time: "",
@@ -18,7 +91,7 @@ const CreateBookingForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -26,7 +99,7 @@ const CreateBookingForm = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
@@ -48,7 +121,7 @@ const CreateBookingForm = () => {
       setSuccessMessage("Booking created successfully!");
       setFormData({
         owner_id: "",
-        caregiver_id: "",
+        caregiver_id: caregiver.id.toString(),
         pet_id: "",
         service_id: "",
         start_time: "",
@@ -58,184 +131,104 @@ const CreateBookingForm = () => {
         additional_instructions: "",
       });
     } catch (error) {
-        const errorMessage = await error.response?.text() || error.message;
-        setErrorMessage(`Error: ${errorMessage}`);
+      setErrorMessage(error instanceof Error ? error.message : "Unknown error");
     }
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Create Booking</h2>
-      {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
-      {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Owner ID:</label>
+    <div className="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold text-center mb-4">Create Booking</h2>
+      {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
+      {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
+      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium mb-1">Seleccionar Mascota</label>
           <input
-            type="string"
-            name="owner_id"
-            value={formData.owner_id}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Caregiver ID:</label>
-          <input
-            type="number"
-            name="caregiver_id"
-            value={formData.caregiver_id}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Pet ID:</label>
-          <input
-            type="number"
+            type="text"
             name="pet_id"
             value={formData.pet_id}
             onChange={handleChange}
-            style={styles.input}
+            className="w-full p-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Service ID:</label>
-          <input
-            type="number"
+        <div>
+          <label className="block text-sm font-medium mb-1">Service</label>
+          <select
             name="service_id"
             value={formData.service_id}
             onChange={handleChange}
-            style={styles.input}
+            className="w-full p-2 border border-gray-300 rounded-md"
             required
-          />
+          >
+            <option value="" disabled>Seleccionar Servicio</option>
+            {caregiver.rates.map((rate) => (
+              <option key={rate.service.id} value={rate.service.id.toString()}>
+                {rate.service.name}
+              </option>
+            ))}
+          </select>
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Start Time:</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Fecha y Hora de Inicio</label>
           <input
             type="datetime-local"
             name="start_time"
             value={formData.start_time}
             onChange={handleChange}
-            style={styles.input}
+            className="w-full p-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>End Time:</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Fecha y Hora de Finalización</label>
           <input
             type="datetime-local"
             name="end_time"
             value={formData.end_time}
             onChange={handleChange}
-            style={styles.input}
+            className="w-full p-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Status:</label>
-          <input
-            type="number"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Total Price:</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Precio Total</label>
           <input
             type="number"
             step="0.01"
             name="total_price"
             value={formData.total_price}
             onChange={handleChange}
-            style={styles.input}
+            className="w-full p-2 border border-gray-300 rounded-md"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>Additional Instructions:</label>
+        <div className="col-span-2">
+          <label className="block text-sm font-medium mb-1">Instrucciones Adicionales</label>
           <textarea
             name="additional_instructions"
             value={formData.additional_instructions}
             onChange={handleChange}
-            style={styles.textarea}
+            className="w-full p-2 border border-gray-300 rounded-md"
           ></textarea>
         </div>
-        <button type="submit" style={styles.button}>
-          Create Booking
-        </button>
+        <div className="col-span-2">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+          >
+            Pedir Servicio
+          </button>
+        </div>
       </form>
+      <button
+        onClick={onClose}
+        className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 mt-4"
+      >
+        Cancelar
+      </button>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: "600px",
-    margin: "0 auto",
-    padding: "20px",
-    backgroundColor: "#f4f4f4",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  inputGroup: {
-    marginBottom: "15px",
-  },
-  label: {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "bold",
-    color: "#555",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-  },
-  textarea: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-    minHeight: "80px",
-  },
-  button: {
-    padding: "10px 20px",
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  successMessage: {
-    color: "green",
-    textAlign: "center",
-    marginBottom: "10px",
-  },
-  errorMessage: {
-    color: "red",
-    textAlign: "center",
-    marginBottom: "10px",
-  },
-};
+}
 
 export default CreateBookingForm;
