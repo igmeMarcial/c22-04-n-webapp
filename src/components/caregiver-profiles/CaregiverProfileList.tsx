@@ -109,37 +109,43 @@ const CaregiversList = () => {
 
             {/* Tabla de disponibilidad */}
             <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-7 gap-4">
               {weekdays.map((day, index) => {
                 const slots = selectedCaregiver.availability.filter(
                   (slot) => slot.weekday === index
                 );
 
-                if (slots.length === 0) return null;
-
                 return (
-                  <div key={index} className="flex flex-col items-start p-4 bg-gray-100 rounded-lg shadow">
-                    <p className="font-bold text-lg mb-2 text-center w-full">{day}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {slots.map((slot) => (
+                  <div
+                    key={index}
+                    className="p-4 bg-gray-100 rounded-lg shadow flex flex-col items-center"
+                  >
+                    <p className="font-bold text-lg mb-2 text-center">{day}</p>
+                    {slots.length > 0 ? (
+                      slots.map((slot) => (
                         <span
                           key={slot.id}
-                          className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full"
+                          className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full mb-2"
                         >
                           {new Date(slot.start_time).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })} - {new Date(slot.end_time).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          -{" "}
+                          {new Date(slot.end_time).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
                           })}
                         </span>
-                      ))}
-                    </div>
+                      ))
+                    ) : (
+                      <span className="text-sm text-gray-500">Sin horarios</span>
+                    )}
                   </div>
                 );
               })}
             </div>
+
           </div>
         ) : (
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
