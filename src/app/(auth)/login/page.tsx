@@ -2,12 +2,10 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserAuthForm } from "@/components/forms/forms";
-import { Icons } from "@/components/shared/icons";
-
+import { ArrowLeftIcon, SparklesIcon } from "lucide-react";
 export const metadata: Metadata = {
   title: "Login",
   description: "Login to your account",
@@ -15,40 +13,47 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
-      <Link
-        href="/"
-        className={cn(
-          buttonVariants({ variant: "outline", size: "sm" }),
-          "absolute left-4 top-4 md:left-8 md:top-8"
-        )}
-      >
-        <>
-          <Icons.chevronLeft className="mr-2 size-4" />
-          Back
-        </>
-      </Link>
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-        <div className="flex flex-col space-y-2 text-center">
-          <Icons.logo className="mx-auto size-6" />
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your email to sign in to your account
-          </p>
-        </div>
-        <Suspense>
-          <UserAuthForm />
-        </Suspense>
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            href="/register"
-            className="hover:text-brand underline underline-offset-4"
-          >
-            Don&apos;t have an account? Sign Up
+    <div className="min-h-screen bg-gradient-to-br from-[#222F92]/10 to-[#148E8F]/10 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Card className="shadow-2xl border-none">
+          <Link href="/" className="absolute top-4 left-4 z-10">
+            <Button variant="ghost" size="icon">
+              <ArrowLeftIcon className="h-5 w-5 text-[#222F92]" />
+            </Button>
           </Link>
-        </p>
+
+          <CardHeader className="text-center space-y-4 pb-2">
+            <div className="flex justify-center">
+              <SparklesIcon
+                className="h-12 w-12 text-[#148E8F]"
+                strokeWidth={1.5}
+              />
+            </div>
+
+            <CardTitle className="text-3xl font-bold text-[#222F92]">
+              Bienvenido de nuevo
+            </CardTitle>
+
+            <p className="text-muted-foreground text-sm">
+              Ingresa tu correo electrónico para iniciar sesión
+            </p>
+          </CardHeader>
+
+          <CardContent>
+            <Suspense>
+              <UserAuthForm />
+            </Suspense>
+
+            <div className="text-center mt-4">
+              <Link
+                href="/register"
+                className="text-sm text-[#148E8F] hover:underline"
+              >
+                ¿No tienes una cuenta? Regístrate
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
