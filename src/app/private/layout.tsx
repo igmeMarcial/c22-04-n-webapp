@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeaderDashboard from "@/components/HeaderAdmin";
 import Sidebar from "@/components/Sidebar";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 export default async function PrivateLayout({ children }) {
   const user = await getCurrentUser();
