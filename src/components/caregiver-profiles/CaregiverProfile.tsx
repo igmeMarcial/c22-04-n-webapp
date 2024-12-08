@@ -34,16 +34,28 @@ const CaregiverProfile = ({ user }) => {
     const loadProfile = async () => {
       const data = await getCaregiverProfileById(user.id);
       if (!data) {
-        // Crear un nuevo perfil si no existe, con datos predeterminados
-        setProfile(null);  // Aseguramos que el estado esté vacío para poder llenar el formulario
+        // Crear un nuevo perfil con datos predeterminados
+        const newProfile = await createCaregiverProfile({
+          userId: user.id, // Agregar el ID del usuario si es necesario
+          experience: "Sin experiencia",
+          description: "Descripción no proporcionada",
+          coverage_radius_KM: 0,
+          verified: 0,
+          verification_date: new Date(),
+          average_rating: 0,
+          total_reviews: 0,
+          rates: [], // Agregar array vacío si no tienes tarifas
+          availability: [], // Agregar array vacío si no tienes disponibilidad
+        });
+        setProfile(newProfile);
       } else {
         setProfile(data);
-        setUpdatedProfile(data);
       }
     };
+   
     loadProfile();
-  }, [user.id]);
-
+   }, [user.id]);
+   
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
     setUpdatedProfile(profile || {});
@@ -55,15 +67,22 @@ const CaregiverProfile = ({ user }) => {
   };
 
   const handleSave = async () => {
-    if (!profile) {
-      const newProfile = await createCaregiverProfile(updatedProfile);
-      setProfile(newProfile);
-    } else {
-      const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
-      setProfile(updatedData);
+    // Verifica que el perfil tenga todos los datos necesarios
+    if (!updatedProfile || Object.keys(updatedProfile).length === 0) {
+      alert("No hay cambios para guardar");
+      return;
     }
-    setIsEditing(false);
-  };
+   
+    // Asegúrate de que los datos sean correctos antes de actualizar
+    const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
+    if (updatedData) {
+      setProfile(updatedData);
+      setIsEditing(false);
+    } else {
+      alert("Error al guardar los cambios");
+    }
+   };
+   
 
   if (profile === null && !isEditing) {
     return (
