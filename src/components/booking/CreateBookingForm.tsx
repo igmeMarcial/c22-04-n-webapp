@@ -75,6 +75,30 @@ interface Props {
   onClose: () => void;
 }
 
+interface Pet {
+  id: number;
+  name: string;
+  owner: {
+    id: number;
+    name: string;
+    last_name: string;
+    email: string;
+    phone: string | null;
+    address: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  species: string;
+  breed: string | null;
+  age: number;
+  weight: number;
+  special_instructions: string | null;
+  medical_needs: string | null;
+  is_active: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const CreateBookingForm = ({ caregiver, onClose }: Props) => {
   const [formData, setFormData] = useState<FormData>({
     owner_id: "",
@@ -90,6 +114,10 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
 
   // Calculate total price based on selected service and time range
   useEffect(() => {
@@ -155,6 +183,27 @@ const CreateBookingForm = ({ caregiver, onClose }: Props) => {
     }
   };
 
+  useEffect(() => {
+    const fetchPets = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/pets?userId=${user?.id}`);
+        if (!response.ok) {
+          throw new Error("Error fetching pets");
+        }
+        const data: Pet[] = await response.json();
+        setPets(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    {/*
+    if (user.id) {
+      fetchPets();
+    } */}
+  }, []);
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-4">Agendar Servicio</h2>
