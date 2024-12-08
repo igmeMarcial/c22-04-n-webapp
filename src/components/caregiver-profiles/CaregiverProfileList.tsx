@@ -102,17 +102,42 @@ const CaregiversList = () => {
       {/* Columna izquierda: Lista de cuidadores */}
       <div className="col-span-1 border rounded-lg bg-white shadow p-4 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Lista de cuidadores</h2>
-        {caregivers.map((caregiver) => (
-          <div
-            key={caregiver.id}
-            className="p-4 border-b hover:bg-gray-100 cursor-pointer"
-            onClick={() => setSelectedCaregiver(caregiver)}
-          >
-            <p className="font-semibold">{caregiver.user.name} {caregiver.user.last_name}</p>
-            <p className="text-sm text-gray-500">{caregiver.user.email}</p>
-          </div>
-        ))}
+        {caregivers.map((caregiver) => {
+          const isSelected = selectedCaregiver?.id === caregiver.id;
+
+          return (
+            <div
+              key={caregiver.id}
+              className={`p-4 border-b cursor-pointer rounded-lg ${isSelected ? "bg-blue-100 border-blue-500" : "hover:bg-gray-100"
+                }`}
+              onClick={() => setSelectedCaregiver(caregiver)}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <p className="font-semibold text-lg">{caregiver.user.name} {caregiver.user.last_name}</p>
+                {caregiver.average_rating && (
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <i
+                        key={i}
+                        className={`fas fa-star ${i < Math.round(Number(caregiver.average_rating))
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                          }`}
+                      ></i>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="text-sm text-gray-500 mb-1">A {caregiver.coverage_radius_KM} Kilometros </p>
+              <p className="text-sm text-gray-500">{caregiver.total_reviews} Opiniones</p>
+              {!caregiver.average_rating && (
+                <p className="text-sm text-gray-500 italic">Sin calificaciones</p>
+              )}
+            </div>
+          );
+        })}
       </div>
+
 
       {/* Columna derecha: Detalles del cuidador */}
       <div className="col-span-2 border rounded-lg bg-white shadow p-4">
@@ -197,7 +222,7 @@ const CaregiversList = () => {
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
         )}
 
-        
+
       </div>
       {/* Modal */}
       {isModalOpen && (
@@ -205,7 +230,7 @@ const CaregiversList = () => {
           <div className="bg-white p-4 rounded-lg shadow-lg ">
             <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} />
           </div>
-          </div>
+        </div>
       )}
     </div>
   );
