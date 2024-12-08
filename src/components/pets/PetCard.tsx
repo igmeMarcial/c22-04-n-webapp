@@ -92,8 +92,12 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, onUpdate }) => {
         <div className="p-3">
           <div className="relative aspect-square rounded-lg overflow-hidden mb-3">
             <Image
-              src={pet.images[0]?.publicUrl ?? "/images/default.jpg"}
-              alt={pet.name}
+              src={
+                pet.images && pet.images.length > 0
+                  ? pet.images[0].publicUrl
+                  : "/images/default.jpg"
+              }
+              alt={pet.name || "Mascota sin nombre"}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
