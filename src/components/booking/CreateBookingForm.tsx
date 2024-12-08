@@ -101,7 +101,7 @@ interface Pet {
 
 const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
   const [formData, setFormData] = useState<FormData>({
-    owner_id: "",
+    owner_id: user.id,
     caregiver_id: caregiver.id.toString(),
     pet_id: "",
     service_id: "",
@@ -213,14 +213,20 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
         <div className="col-span-2">
           <label className="block text-sm font-medium mb-1">Seleccionar Mascota</label>
-          <input
-            type="text"
+          <select
             name="pet_id"
             value={formData.pet_id}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
             required
-          />
+          >
+            <option value="" disabled>Seleccionar Mascota</option>
+            {pets.map((pet) => (
+              <option key={pet.id} value={pet.id.toString()}>
+                {pet.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Servicio</label>
