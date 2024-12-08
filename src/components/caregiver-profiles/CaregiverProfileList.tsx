@@ -155,23 +155,28 @@ const CaregiversList = () => {
                 <p><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
                 <p><strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}</p>
                 <p><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
-                <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
+                <p><strong>Distencia (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
                 <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
               </div>
 
               <div>
                 {/* Servicios que ofrece y tarifas */}
                 <h3 className="text-xl font-semibold pb-2 border-b">Servicios y tarifas</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                   {selectedCaregiver.rates.map((rate) => (
                     <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow">
                       <p className="font-bold text-lg">{rate.service.name}</p>
                       <p className="text-sm text-gray-500">{rate.service.description}</p>
-                      <p><strong>Precio por hora:</strong> ${rate.base_price}</p>
-                      <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
+                      <p>
+                        <strong>Precio por hora:</strong> ${rate.base_price}
+                      </p>
+                      <p>
+                        <strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}
+                      </p>
                     </div>
                   ))}
                 </div>
+
               </div>
             </div>
 
