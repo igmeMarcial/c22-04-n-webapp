@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, PawPrint } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import CreateBookingForm from "../booking/CreateBookingForm";
 
 interface Caregiver {
@@ -101,41 +105,50 @@ const CaregiversList = () => {
     <div className="grid grid-cols-3 gap-4 h-[calc(100vh-126px)] p-4">
       {/* Columna izquierda: Lista de cuidadores */}
       <div className="col-span-1 border rounded-lg bg-white shadow p-4 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Lista de cuidadores</h2>
-        {caregivers.map((caregiver) => {
-          const isSelected = selectedCaregiver?.id === caregiver.id;
-
-          return (
-            <div
-              key={caregiver.id}
-              className={`p-4 border-b cursor-pointer rounded-lg ${isSelected ? "bg-blue-100 border-blue-500" : "hover:bg-gray-100"
-                }`}
-              onClick={() => setSelectedCaregiver(caregiver)}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <p className="font-semibold text-lg">{caregiver.user.name} {caregiver.user.last_name}</p>
-                {caregiver.average_rating && (
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <i
-                        key={i}
-                        className={`fas fa-star ${i < Math.round(Number(caregiver.average_rating))
-                          ? "text-yellow-400"
-                          : "text-gray-300"
-                          }`}
-                      ></i>
-                    ))}
-                  </div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-[#222F92]">Lista de cuidadores</h2>
+        </div>
+        <AnimatePresence>
+          {caregivers.map((caregiver) => {
+            const isSelected = selectedCaregiver?.id === caregiver.id;
+            return (
+              <motion.div
+                key={caregiver.id}
+                className={`p-4 border-b cursor-pointer rounded-lg ${isSelected ? "bg-blue-100 border-blue-500" : "hover:bg-gray-100"
+                  }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onClick={() => setSelectedCaregiver(caregiver)}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-lg flex items-center gap-2 text-[#222F92]">
+                    <PawPrint className="w-5 h-5 text-blue-500" />
+                    {caregiver.user.name} {caregiver.user.last_name}
+                  </p>
+                  {caregiver.average_rating && (
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <i
+                          key={i}
+                          className={`fas fa-star ${i < Math.round(Number(caregiver.average_rating))
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                            }`}
+                        ></i>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <p className="text-sx text-[#148E8F] mb-1">A {caregiver.coverage_radius_KM} Kilometros </p>
+                <p className="text-sm text-gray-500">{caregiver.total_reviews} Opiniones</p>
+                {!caregiver.average_rating && (
+                  <p className="text-sm text-gray-500 italic">Sin calificaciones</p>
                 )}
-              </div>
-              <p className="text-sm text-gray-500 mb-1">A {caregiver.coverage_radius_KM} Kilometros </p>
-              <p className="text-sm text-gray-500">{caregiver.total_reviews} Opiniones</p>
-              {!caregiver.average_rating && (
-                <p className="text-sm text-gray-500 italic">Sin calificaciones</p>
-              )}
-            </div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
 
