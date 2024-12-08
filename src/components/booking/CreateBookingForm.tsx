@@ -168,7 +168,7 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       const data = await response.json();
       setSuccessMessage("Booking created successfully!");
       setFormData({
-        owner_id: "",
+        owner_id: user.id,
         caregiver_id: caregiver.id.toString(),
         pet_id: "",
         service_id: "",
@@ -204,7 +204,7 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       fetchPets();
     } 
   }, [user?.id]);
-  
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-4">Agendar Servicio</h2>
