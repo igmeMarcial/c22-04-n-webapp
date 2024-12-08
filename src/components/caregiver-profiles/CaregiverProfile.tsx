@@ -14,47 +14,101 @@ interface CaregiverProfileType {
   verification_date: Date | null;
   average_rating: number;
   total_reviews: number;
-  rates?: { id: number; serviceId: string; base_price: number; additional_hour_price: number }[];
-  availability?: { id: number; weekday: number; start_time: string; end_time: string }[];
+  rates?: { id: number; serviceId: string; base_price: number; additional_hour_price: number }[];  
+  availability?: { id: number; weekday: number; start_time: string; end_time: string }[];  
 }
 
 const CaregiverProfile = ({ user }) => {
   const [profile, setProfile] = useState<CaregiverProfileType | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedProfile, setUpdatedProfile] = useState({});
+  const [updatedProfile, setUpdatedProfile] = useState({
+    experience: "",
+    description: "",
+    coverage_radius_KM: 0,
+    verified: 0,
+    verification_date: new Date(),
+  });
 
   // Cargar datos del perfil
   useEffect(() => {
     const loadProfile = async () => {
-        const data = await getCaregiverProfileById(user.id);
-        if (!data) {
-          // Crear un nuevo perfil si no existe, pasando los datos completos
-          const newProfile = await createCaregiverProfile({
-            experience: "Sin experiencia", // Aquí debes pasar los datos adecuados
-            description: "Descripción no proporcionada",
-            coverage_radius_KM: 0,
-            verified: 0,
-            verification_date: new Date(),
-          });
-          setProfile(newProfile);
-        } else {
-          setProfile(data);
-        }
-      };
-      
+      const data = await getCaregiverProfileById(user.id);
+      if (!data) {
+        // Crear un nuevo perfil si no existe, con datos predeterminados
+        setProfile(null);  // Aseguramos que el estado esté vacío para poder llenar el formulario
+      } else {
+        setProfile(data);
+        setUpdatedProfile(data);
+      }
+    };
     loadProfile();
   }, [user.id]);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
-    setUpdatedProfile(profile);
+    setUpdatedProfile(profile || {});
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setUpdatedProfile({ ...updatedProfile, [name]: value });
   };
 
   const handleSave = async () => {
-    const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
-    setProfile(updatedData);
+    if (!profile) {
+      const newProfile = await createCaregiverProfile(updatedProfile);
+      setProfile(newProfile);
+    } else {
+      const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
+      setProfile(updatedData);
+    }
     setIsEditing(false);
   };
+
+  if (profile === null && !isEditing) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Perfil del Cuidador</h1>
+        <div className="bg-white p-4 rounded shadow mb-6">
+          <h2 className="text-xl font-semibold">Crea tu perfil</h2>
+          <form>
+            <div className="mt-4 space-y-2">
+              <label>Experiencia</label>
+              <input
+                type="text"
+                name="experience"
+                value={updatedProfile.experience}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+              <label>Descripción</label>
+              <textarea
+                name="description"
+                value={updatedProfile.description}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+              <label>Radio de Cobertura (KM)</label>
+              <input
+                type="number"
+                name="coverage_radius_KM"
+                value={updatedProfile.coverage_radius_KM}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+              <button
+                type="button"
+                onClick={handleSave}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Guardar Perfil
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (!profile) {
     return <div className="flex items-center justify-center h-screen">Cargando...</div>;
@@ -72,78 +126,52 @@ const CaregiverProfile = ({ user }) => {
             className="flex items-center gap-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
             onClick={handleEditToggle}
           >
-            <Edit size={16} /> Editar
+            <Edit size={16} /> {isEditing ? "Cancelar" : "Editar"}
           </button>
         </div>
         <div className="mt-4 space-y-2">
-          <p><strong>Experiencia:</strong> {profile.experience || "No proporcionado"}</p>
-          <p><strong>Descripción:</strong> {profile.description || "No proporcionado"}</p>
-          <p><strong>Radio de Cobertura:</strong> {profile.coverage_radius_KM || "N/A"} KM</p>
-          <p><strong>Verificado:</strong> {profile.verified ? "Sí" : "No"}</p>
-          <p><strong>Calificación Promedio:</strong> {profile.average_rating || "Sin calificación disponible"}</p>
-          <p><strong>Total de Opiniones:</strong> {profile.total_reviews || 0}</p>
+          {isEditing ? (
+            <>
+              <input
+                type="text"
+                name="experience"
+                value={updatedProfile.experience}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+              <textarea
+                name="description"
+                value={updatedProfile.description}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="number"
+                name="coverage_radius_KM"
+                value={updatedProfile.coverage_radius_KM}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+              />
+            </>
+          ) : (
+            <>
+              <p><strong>Experiencia:</strong> {profile.experience || "No proporcionado"}</p>
+              <p><strong>Descripción:</strong> {profile.description || "No proporcionado"}</p>
+              <p><strong>Radio de Cobertura:</strong> {profile.coverage_radius_KM || "N/A"} KM</p>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Tarifas */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h2 className="text-xl font-semibold mb-4">Tarifas</h2>
-        {profile.rates && profile.rates.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2 text-left">ID del Servicio</th>
-                  <th className="border border-gray-300 p-2 text-left">Precio Base</th>
-                  <th className="border border-gray-300 p-2 text-left">Precio por Hora Adicional</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.rates.map((rate) => (
-                  <tr key={rate.id}>
-                    <td className="border border-gray-300 p-2">{rate.serviceId}</td>
-                    <td className="border border-gray-300 p-2">${rate.base_price.toFixed(2)}</td>
-                    <td className="border border-gray-300 p-2">${rate.additional_hour_price.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">No hay tarifas disponibles para este cuidador.</p>
-        )}
-      </div>
-
-      {/* Disponibilidad */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h2 className="text-xl font-semibold mb-4">Disponibilidad</h2>
-        {profile.availability && profile.availability.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2 text-left">Día</th>
-                  <th className="border border-gray-300 p-2 text-left">Hora de Inicio</th>
-                  <th className="border border-gray-300 p-2 text-left">Hora de Fin</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.availability.map((slot) => (
-                  <tr key={slot.id}>
-                    <td className="border border-gray-300 p-2">
-                      {["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"][slot.weekday]}
-                    </td>
-                    <td className="border border-gray-300 p-2">{slot.start_time}</td>
-                    <td className="border border-gray-300 p-2">{slot.end_time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">No hay datos de disponibilidad para este cuidador.</p>
-        )}
-      </div>
+      {/* Botón para guardar los cambios */}
+      {isEditing && (
+        <button
+          onClick={handleSave}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Guardar Cambios
+        </button>
+      )}
     </div>
   );
 };
