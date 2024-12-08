@@ -17,9 +17,7 @@ export async function updateUserInfo(userId: string, data: PersonalInfo) {
     if (!session?.user || session?.user.id !== userId) {
       throw new Error("Unauthorized");
     }
-
     const { name,lastName, phone, address, latitude, longitude} = userNameSchema.parse(data);
-
     // Update the user name.
     await prisma.user.update({
       where: {
@@ -35,7 +33,7 @@ export async function updateUserInfo(userId: string, data: PersonalInfo) {
       },
     })
 
-    revalidatePath('/dashboard/settings');
+    revalidatePath('/dashboard');
     return { status: "success" };
   } catch (error) {
     console.log(error)

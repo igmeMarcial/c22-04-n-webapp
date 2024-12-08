@@ -15,7 +15,7 @@ export default async function AdminLayout({
     <div className="flex flex-col min-h-screen">
       <HeaderDashboard />
       <div className="flex flex-1 ">
-        <Sidebar />
+        <Sidebar user={user} />
         <main className="border flex-1 ">{children}</main>
       </div>
     </div>

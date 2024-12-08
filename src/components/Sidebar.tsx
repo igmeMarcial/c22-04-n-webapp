@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
   Home,
-  User,
+  User as UserIcon,
   Search,
   MessageCircle,
   Settings,
@@ -14,9 +14,13 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const Sidebar: React.FC = () => {
+import { User } from "../../types/types";
+interface SidebarProps {
+  user: User;
+}
+const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const session = useSession();
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const sidebarVariants = {
@@ -29,42 +33,38 @@ const Sidebar: React.FC = () => {
       transition: { duration: 0.3 },
     },
   };
-
+  const basePath =
+    user.role === "CARETAKER" ? "/dashboard/caretaker" : "/dashboard/owner";
   const menuItems = [
     {
       icon: <Home className="h-5 w-5" />,
       label: "Dashboard",
-      href: "/dashboard",
+      href: `${basePath}`,
     },
     {
-      icon: <User className="h-5 w-5" />,
-      label: "Perfil Dueño",
-      href: "/perfil-dueno",
+      icon: <UserIcon className="h-5 w-5" />,
+      label: "Mi perfil",
+      href: `${basePath}/profile`,
     },
     {
       icon: <Search className="h-5 w-5" />,
-      label: "Buscar Cuidador",
-      href: "/buscar-cuidador",
-    },
-    {
-      icon: <User className="h-5 w-5" />,
-      label: "Perfil Cuidador",
-      href: "/perfil-cuidador",
+      label: user.role === "CARETAKER" ? "Buscar Mascotas" : "Buscar Cuidador",
+      href: user.role === "CARETAKER" ? "/pets" : `${basePath}/buscar-cuidador`,
     },
     {
       icon: <MessageCircle className="h-5 w-5" />,
       label: "Mensajes",
-      href: "/mensajes",
+      href: `${basePath}/mensajes`,
     },
     {
       icon: <Settings className="h-5 w-5" />,
       label: "Configuración",
-      href: "/configuracion",
+      href: `${basePath}/configuracion`,
     },
     {
       icon: <HelpCircle className="h-5 w-5" />,
       label: "Ayuda",
-      href: "/ayuda",
+      href: `${basePath}/ayuda`,
     },
   ];
 
@@ -111,7 +111,7 @@ const Sidebar: React.FC = () => {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <User />
+            <UserIcon />
           )}
         </div>
         {isExpanded && (

@@ -40,16 +40,20 @@ export default function RegistrationModal({
   };
 
   const handleUserTypeNext = async () => {
-    if (userType && session.data?.user?.id) {
-      await updateUserRole(session.data.user.id, { role: userType });
+    if (userType) {
       setStep("personalInfo");
     }
   };
 
   const handlePersonalInfoSubmit = async (data: PersonalInfo) => {
-    if (session.data?.user?.id) {
+    if (session.data?.user?.id && userType) {
       setPersonalInfo(data);
+
+      // Guarda tanto el tipo de usuario como la información personal juntos
+      await updateUserRole(session.data.user.id, { role: userType });
       await updateUserInfo(session.data.user.id, data);
+
+      // Una vez que ambos se guarden correctamente, cambia el paso
       setStep("success");
     }
   };

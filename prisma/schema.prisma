@@ -185,5 +185,6 @@ model CaregiverRate {
   caregiver CaregiverProfile @relation(fields: [caregiverId], references: [id])
   service   Service          @relation(fields: [serviceId], references: [id])
 
+  @@unique([caregiverId, serviceId]) // Clave única compuesta
   @@map("caregiver_rates")
 }
