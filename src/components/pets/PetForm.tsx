@@ -1,217 +1,434 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useUser } from "@/context/UserContext";
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PawPrint, Upload, X } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { User } from "../../../types/types";
+import { PetFormData, petFormSchema } from "../schema/pet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/Select";
+import { breedOptions } from "../constant/pet";
+import { UploadManyToS3 } from "@/lib/s3/action";
+import { Pet } from "./PetsList";
 
 interface PetFormProps {
   closeModal?: () => void;
+  user: User;
+  pet?: Pet | null;
 }
 
-const PetForm: React.FC<PetFormProps> = ({ closeModal }) => {
-  const { user, setUser } = useUser();
-  const [formData, setFormData] = useState({
-    name: '',
-    species: '',
-    breed: '',
-    age: 0,
-    weight: 0,
-    special_instructions: '',
-    medical_needs: '',
-    is_active: 1,
+const speciesOptions = [
+  "Perro",
+  "Gato",
+  "Ave",
+  "Reptil",
+  "Hamster",
+  "Conejo",
+  "Tortuga",
+];
+
+const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
+  const [loading, setLoading] = useState(false);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [selectedSpecies, setSelectedSpecies] = useState<string>("");
+  const [images, setImages] = useState<File[]>([]);
+  const isEditing = !!pet;
+  const form = useForm<PetFormData>({
+    resolver: zodResolver(petFormSchema),
+    defaultValues: {
+      name: pet?.name ?? "",
+      species: pet?.species ?? "",
+      breed: pet?.breed ?? "",
+      age: pet?.age ?? 0,
+      weight: pet?.weight ?? 0,
+      special_instructions: pet?.special_instructions ?? "",
+      medical_needs: pet?.medical_needs ?? "",
+      images: [],
+      is_active: pet?.is_active ?? 1,
+    },
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  useEffect(() => {
+    if (pet) {
+      setSelectedSpecies(pet.species);
+      if (pet.images?.length > 0) {
+        setPreviewImages(pet.images.map((img) => img.publicUrl));
+      }
+    }
+  }, [pet]);
 
-  const speciesOptions = ['Perro', 'Gato', 'Ave', 'Reptil', 'Hamster', 'Conejo', 'Tortuga'];
-  const breedOptions: { [key: string]: string[] } = {
-    Perro: ['Labrador', 'Bulldog', 'Poodle', 'Chihuahua'],
-    Gato: ['Siames', 'Persa', 'Maine Coon', 'Siberiano'],
-    Ave: ['Loro', 'Canario', 'Periquito', 'Cacatúa'],
-    Reptil: ['Iguana', 'Gecko', 'Serpiente', 'Tortuga'],
-    Hamster: ['Sirio', 'Roborovski', 'Campbell', 'Chino'],
-    Conejo: ['Holandés', 'Cabeza de León', 'Mini Lop', 'Rex'],
-    Tortuga: ['Mediterránea', 'Rusa', 'Estrella de la India', 'Orejas Rojas'],
-  };
-  
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target;
-    const parsedValue = type === 'number' ? Number(value) : value;
-    setFormData({ ...formData, [name]: parsedValue });
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setImages((prevImages) => [...prevImages, ...files]);
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImages((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
+  const removeImage = (index: number) => {
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
+  const onSubmit = async (data: PetFormData) => {
     try {
-      const response = await fetch('/api/pets', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const endpoint = isEditing ? `/api/pets/${pet.id}` : "/api/pets";
+
+      const method = isEditing ? "PUT" : "POST";
+
+      if (images.length <= 0) {
+        toast.error("Fotos de tu mascota es importante");
+        return;
+      }
+      setLoading(true);
+      //Cambiar aqui para no subir archivos a la nube
+      const uplaodImages = [
+        {
+          fileName: "pexels-silas-leupold-463964-1165082.jpg",
+          publicUrl:
+            "https://plazaperu.s3.us-east-1.amazonaws.com/pexels-silas-leupold-463964-1165082.jpg",
         },
-        body: JSON.stringify({ 
-          userId: user.id, // or whichever property name makes sense
-          ...formData 
-        })
-      });
+      ];
+      //evita subir a la nube archivos
+      // const uplaodImages = await UploadManyToS3(images);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}${endpoint}`,
+        {
+          method: method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            ...data,
+            images: uplaodImages,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error creating pet');
+        throw new Error(
+          isEditing
+            ? "Error al actualizar la mascota"
+            : "Error al registrar la mascota"
+        );
       }
 
-      const data = await response.json();
-      setSuccess('¡Mascota registrada con éxito!');
-      setFormData({
-        name: '',
-        species: '',
-        breed: '',
-        age: 0,
-        weight: 0,
-        special_instructions: '',
-        medical_needs: '',
-        is_active: 1,
-      });
-    } catch (err: any) {
-      setError(err.message || 'Error registrando mascota');
+      toast.success(
+        isEditing
+          ? "¡Mascota actualizada exitosamente!"
+          : "¡Mascota registrada exitosamente!"
+      );
+      closeModal?.();
+      setImages([]);
+    } catch (error) {
+      console.log(error);
+      toast.error("Error al registrar la mascota");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (selectedSpecies !== form.getValues("species")) {
+      form.setValue("breed", "");
+      setSelectedSpecies(form.getValues("species"));
+    }
+  }, [form.watch("species"), form, selectedSpecies]);
+
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center"
-      style={{
-        backgroundImage: `url('/ruta/a/tu/imagen.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-md p-6 bg-white rounded-2xl shadow-2xl space-y-6"
-        style={{
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)',
-        }}
-      >
-        <h2 className="text-lg font-bold text-center text-gray-800">Registrar nueva mascota</h2>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {success && <p className="text-green-500 text-sm">{success}</p>}
+    <div className="max-h-[600px]  overflow-y-auto px-6">
+      <DialogHeader className="mb-6">
+        <DialogTitle className="text-2xl font-bold text-[#222F92] flex items-center gap-2">
+          <PawPrint className="w-6 h-6 text-[#148E8F]" />
+          {isEditing ? "Editar Mascota" : "Registrar Nueva Mascota"}
+        </DialogTitle>
+      </DialogHeader>
 
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-800">
-            Nombre
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="species" className="block text-sm font-medium text-gray-800">
-            Especie
-          </label>
-          <select
-            id="species"
-            name="species"
-            value={formData.species}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            <option value="">Selecciona una especie</option>
-            {speciesOptions.map((species) => (
-              <option key={species} value={species}>
-                {species}
-              </option>
-            ))}
-          </select>
-        </div>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nombre de tu mascota" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div>
-          <label htmlFor="breed" className="block text-sm font-medium text-gray-800">
-            Raza
-          </label>
-          <select
-            id="breed"
-            name="breed"
-            value={formData.breed}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-            disabled={!formData.species}
+            <FormField
+              control={form.control}
+              name="species"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Especie</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedSpecies(value);
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una especie" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {speciesOptions.map((species) => (
+                        <SelectItem key={species} value={species}>
+                          {species}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           >
-            <option value="">Selecciona una raza</option>
-            {formData.species &&
-              breedOptions[formData.species]?.map((breed) => (
-                <option key={breed} value={breed}>
-                  {breed}
-                </option>
-              ))}
-          </select>
-        </div>
+            <FormField
+              control={form.control}
+              name="breed"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Raza</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={!selectedSpecies}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una raza" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {selectedSpecies &&
+                        breedOptions[selectedSpecies]?.map((breed) => (
+                          <SelectItem key={breed} value={breed}>
+                            {breed}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </motion.div>
 
-        <div>
-          <label htmlFor="age" className="block text-sm font-medium text-gray-800">
-            Edad
-          </label>
-          <input
-            type="number"
-            id="age"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            min={0}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-          />
-        </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <FormField
+              control={form.control}
+              name="age"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Edad (años)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div>
-          <label htmlFor="weight" className="block text-sm font-medium text-gray-800">
-            Peso (kg)
-          </label>
-          <input
-            type="number"
-            id="weight"
-            name="weight"
-            value={formData.weight}
-            onChange={handleChange}
-            min={0}
-            required
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="weight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Peso (kg)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </motion.div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-        >
-          {loading ? 'Registrando...' : 'Registrar mascota'}
-        </button>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <FormField
+              control={form.control}
+              name="special_instructions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instrucciones Especiales</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Cuidados especiales, rutinas, etc."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </motion.div>
 
-        <button
-          className="w-full py-2 mt-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          onClick={closeModal}
-        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <FormField
+              control={form.control}
+              name="medical_needs"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Necesidades Médicas</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Medicamentos, alergias, condiciones médicas..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </motion.div>
 
-          Volver
-        </button>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-4"
+          >
+            <FormLabel>Fotos de tu Mascota</FormLabel>
+            <div className="flex flex-wrap gap-4">
+              <AnimatePresence>
+                {previewImages.map((image, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="relative w-24 h-24"
+                  >
+                    <img
+                      src={image}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              <label className="w-24 h-24 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#148E8F] transition-colors">
+                <Upload className="w-6 h-6 text-gray-400" />
+                <span className="text-xs text-gray-500 mt-2">Subir foto</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </label>
+            </div>
+          </motion.div>
 
-      </form>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex gap-4 pt-4"
+          >
+            <Button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-[#222F92] hover:bg-[#222F92]/90"
+            >
+              {loading
+                ? isEditing
+                  ? "Actualizando..."
+                  : "Registrando..."
+                : isEditing
+                ? "Actualizar Mascota"
+                : "Registrar Mascota"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={closeModal}
+              className="flex-1"
+            >
+              Cancelar
+            </Button>
+          </motion.div>
+        </form>
+      </Form>
     </div>
   );
 };

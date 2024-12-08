@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 // Define the type for your user (adjust as needed)
 interface User {
@@ -16,16 +16,16 @@ export const UserContext = createContext<{
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }>({
   user: null,
-  setUser: () => {}
+  setUser: () => {},
 });
 
 // Provider component
-export function UserProvider({ 
-  children, 
-  initialUser 
-}: { 
-  children: React.ReactNode, 
-  initialUser: User | null 
+export function UserProvider({
+  children,
+  initialUser,
+}: {
+  children: React.ReactNode;
+  initialUser: User | null;
 }) {
   const [user, setUser] = useState<User | null>(initialUser);
 
@@ -36,7 +36,6 @@ export function UserProvider({
   );
 }
 
-// Custom hook for using the context
 export function useUser() {
   return useContext(UserContext);
 }

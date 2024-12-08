@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   images:{
     remotePatterns:[
       {hostname:'lh3.googleusercontent.com'},
-      {hostname:'xsgames.co'}
+      {hostname:'xsgames.co'},
+      {hostname:'plazaperu.s3.us-east-1.amazonaws.com'}
     ]
   }
 };

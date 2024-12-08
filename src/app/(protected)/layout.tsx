@@ -1,15 +1,23 @@
 import "../globals.css";
 import HeaderDashboard from "@/components/HeaderAdmin";
+import Sidebar from "@/components/Sidebar";
+import { getCurrentUser } from "@/lib/session";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+  if (!user || !user.id) redirect("/login");
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <HeaderDashboard />
-      {children}
+      <div className="flex flex-1 ">
+        <Sidebar />
+        <main className="border flex-1 ">{children}</main>
+      </div>
     </div>
   );
 }

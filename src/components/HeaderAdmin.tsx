@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   Lock,
+  PawPrint,
 } from "lucide-react";
 import { Input } from "./ui/input";
 import {
@@ -15,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
 
 import {
@@ -31,6 +32,7 @@ import { useState } from "react";
 
 const HeaderDashboard = () => {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -40,116 +42,148 @@ const HeaderDashboard = () => {
     );
   return (
     <>
-      <nav className="w-full bg-gray-300 px-4 py-3 fixed top-0 z-50">
+      <div className="w-full bg-white border-b px-4 py-3 fixed top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo Section */}
-          <div className="flex items-center space-x-2">
+          <motion.div
+            className="flex items-center space-x-2"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-[#4A55A2] rounded-full flex items-center justify-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="white"
-                  className="w-8 h-8"
-                  xmlns="http://www.w3.org/2000/svg"
+              <div className="w-12 h-12 bg-[#222F92] rounded-full flex items-center justify-center overflow-hidden">
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <path d="M12,2C7.04,2,3,6.04,3,11c0,3.86,2.45,7.13,5.88,8.31V22h6.25v-2.69C18.55,18.13,21,14.86,21,11C21,6.04,16.96,2,12,2z M12,4c1.93,0,3.5,1.57,3.5,3.5S13.93,11,12,11s-3.5-1.57-3.5-3.5S10.07,4,12,4z M12,18.5c-2.76,0-5-2.24-5-5s2.24-5,5-5s5,2.24,5,5S14.76,18.5,12,18.5z" />
-                </svg>
+                  <PawPrint className="w-7 h-7 text-white" />
+                </motion.div>
               </div>
-              <div className="ml-2">
-                <h1 className="text-2xl font-bold text-[#4A55A2]">PetCare</h1>
-                <p className="text-xs text-gray-600">
-                  Conecta, cuida, comparte
-                </p>
+              <div className="ml-3">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-[#222F92] to-[#148E8F] bg-clip-text text-transparent">
+                  PetCare
+                </h1>
+                <p className="text-xs text-gray-600">Panel de Administración</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           <div className="flex items-center space-x-6">
-            <Dialog>
+            {/* Search Dialog */}
+            <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
               <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-transparent"
-                >
+                <div className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
                   <Search className="w-6 h-6 text-gray-600" />
-                </Button>
+                </div>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Buscar</DialogTitle>
+                  <DialogTitle>Búsqueda Rápida</DialogTitle>
                 </DialogHeader>
-                <div className="relative">
+                <div className="relative mt-4">
                   <Input
                     type="text"
-                    placeholder="¿Qué estás buscando?"
-                    className="w-full pl-10"
+                    placeholder="Buscar usuarios, mascotas, servicios..."
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                    autoFocus
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 </div>
               </DialogContent>
             </Dialog>
 
-            <button className="p-2 hover:bg-gray-200 rounded-full relative">
+            {/* Notifications */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 hover:bg-gray-100 rounded-full relative transition-colors duration-200"
+            >
               <Bell className="w-6 h-6 text-gray-600" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
+              />
+            </motion.button>
 
-            <div className="">
+            {/* User Menu */}
+            <div className="relative">
               <DropdownMenu open={open} onOpenChange={setOpen}>
-                <DropdownMenuTrigger>
-                  <UserAvatar
-                    user={{
-                      name: user.name ?? "",
-                      image: user.image ?? null,
-                    }}
-                    className="size-8 border"
-                  />
+                <DropdownMenuTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <UserAvatar
+                      user={{
+                        name: user.name ?? "",
+                        image: user.image ?? null,
+                      }}
+                      className="size-9 border-2 border-[#222F92]/20 cursor-pointer"
+                    />
+                  </motion.div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="flex items-center justify-start gap-2 p-2">
+                <DropdownMenuContent align="end" className="w-72">
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-start gap-3 p-3"
+                  >
+                    <UserAvatar
+                      user={{
+                        name: user.name ?? "",
+                        image: user.image ?? null,
+                      }}
+                      className="size-10 border-2 border-[#222F92]/20"
+                    />
                     <div className="flex flex-col space-y-1 leading-none">
-                      {user.name && <p className="font-medium">{user.name}</p>}
+                      {user.name && (
+                        <p className="font-medium text-base">{user.name}</p>
+                      )}
                       {user.email && (
                         <p className="w-[200px] truncate text-sm text-muted-foreground">
-                          {user?.email}
+                          {user.email}
                         </p>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                   <DropdownMenuSeparator />
 
-                  {user.role === "ADMIN" ? (
+                  {user.role === "ADMIN" && (
                     <DropdownMenuItem asChild>
                       <Link
                         href="/admin"
-                        className="flex items-center space-x-2.5"
+                        className="flex items-center space-x-2.5 p-2 hover:bg-[#222F92]/10 transition-colors duration-200"
                       >
                         <Lock className="size-4" />
-                        <p className="text-sm">Admin</p>
+                        <p className="text-sm">Panel de Admin</p>
                       </Link>
                     </DropdownMenuItem>
-                  ) : null}
+                  )}
 
                   <DropdownMenuItem asChild>
-                    <Link href="/" className="flex items-center space-x-2.5">
+                    <Link
+                      href="/"
+                      className="flex items-center space-x-2.5 p-2 hover:bg-[#222F92]/10 transition-colors duration-200"
+                    >
                       <LayoutDashboard className="size-4" />
-                      <p className="text-sm">Inicio</p>
+                      <p className="text-sm">Panel Principal</p>
                     </Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem asChild>
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center space-x-2.5"
+                      className="flex items-center space-x-2.5 p-2 hover:bg-[#222F92]/10 transition-colors duration-200"
                     >
                       <Settings className="size-4" />
-                      <p className="text-sm">Settings</p>
+                      <p className="text-sm">Configuración</p>
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem
-                    className="cursor-pointer"
+                    className="cursor-pointer p-2 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-200"
                     onSelect={(event) => {
                       event.preventDefault();
                       signOut({
@@ -159,7 +193,7 @@ const HeaderDashboard = () => {
                   >
                     <div className="flex items-center space-x-2.5">
                       <LogOut className="size-4" />
-                      <p className="text-sm">Log out </p>
+                      <p className="text-sm">Cerrar Sesión</p>
                     </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -167,7 +201,7 @@ const HeaderDashboard = () => {
             </div>
           </div>
         </div>
-      </nav>
+      </div>
       <div className="h-[72px]"></div>
     </>
   );

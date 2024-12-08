@@ -1,11 +1,14 @@
+"use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, PawPrint } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import PetForm from "@/components/pets/PetForm";
-import { useUser } from "@/context/UserContext";
+import { User } from "../../../types/types";
+import PetCard from "./PetCard";
 
-
-interface Pet {
+export interface Pet {
   id: number;
   name: string;
   owner: {
@@ -27,34 +30,45 @@ interface Pet {
   is_active: number;
   createdAt: string;
   updatedAt: string;
+  images: { fileName: string; publicUrl: string }[];
 }
 
-const PetsList: React.FC = () => {
-  const { user, setUser } = useUser();
+interface PetsListProps {
+  user: User;
+}
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
-
+const PetsList: React.FC<PetsListProps> = ({ user }) => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+  const handleDelete = (petId: number) => {
+    setPets((prevPets) => prevPets.filter((pet) => pet.id !== petId));
+  };
 
-
+  const handleUpdate = (pet: Pet) => {
+    setSelectedPet(pet);
+    setIsModalOpen(true);
+  };
   useEffect(() => {
     const fetchPets = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/pets?userId=${user?.id}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/pets?userId=${user.id}`
+        );
         if (!response.ok) {
-          throw new Error("Error fetching pets");
+          throw new Error("Error al cargar mascotas");
         }
         const data: Pet[] = await response.json();
         setPets(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error) {
+        console.log(error);
+        setError(error instanceof Error ? error.message : "Error desconocido");
       } finally {
         setLoading(false);
       }
@@ -63,83 +77,82 @@ const PetsList: React.FC = () => {
     if (user.id) {
       fetchPets();
     }
-  }, [user, isOpen]);
-
-
-  const images = {
-    Bird: "/images/bird.jpg",
-    Dog: "/images/dog.webp",
-    Cat: "/images/cat.jpg",
-    Hamster: "/images/hammster.webp",
-    Rabbit: "/images/rabbit.jpg",
-    Turtle: "/images/turtle.jpeg",
-    Parrot: "/images/parrot.jpg",
-    Pajaro: "/images/bird.jpg",
-    Perro: "/images/dog.webp",
-    Gato: "/images/cat.jpg",
-    Conejo: "/images/rabbit.jpg",
-    Tortuga: "/images/turtle.jpeg",
-    Loro: "/images/parrot.jpg",
-    Ave: "/images/bird.jpg",
-  };
+  }, [user?.id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <motion.div
+          animate={{
+            rotate: 360,
+            transition: {
+              repeat: Infinity,
+              duration: 1,
+              ease: "linear",
+            },
+          }}
+        >
+          <PawPrint className="w-12 h-12 text-[#222F92]" />
+        </motion.div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-red-500 p-4">{error}</div>;
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-center pb-4">Mis Mascotas</h1>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {pets.map((pet) => (
-          <div
-            key={pet.id}
-            className="flex flex-col items-center min-w-[120px] max-w-[150px]"
-          >
-            {/* Contenedor de la imagen */}
-            <div className="relative w-[120px] h-[120px] rounded-lg overflow-hidden">
-              <Image
-                src={images[pet.species] || "/images/default.jpg"}
-                alt={pet.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-            {/* Nombre de la mascota */}
-            <p className="mt-2 text-sm font-medium">{pet.name}</p>
-          </div>
-        ))}
-
-        {/* Botón para agregar una nueva mascota */}
-        <div className="flex flex-col items-center min-w-[120px] max-w-[150px]">
-
-            <div
-              className="relative w-[120px] h-[120px] rounded-full bg-white shadow-md flex items-center justify-center text-4xl font-bold text-gray-600 border border-gray-300 hover:bg-gray-100 transition duration-300"
-              aria-label="Agregar nueva mascota"
-              onClick={openModal}
-            >
-              +
-            </div>
-            <p className="mt-2 text-sm font-medium">Agregar Mascota</p>
+    <Card className="w-full h-full border-none bg-transparent shadow-lg">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-[#222F92] flex items-center gap-2">
+            <PawPrint className="w-6 h-6 text-[#148E8F]" />
+            Mis Mascotas
+          </h2>
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[#148E8F] text-white rounded-full p-2 shadow-md hover:bg-[#148E8F]/90 transition-colors"
+              >
+                <Plus className="w-6 h-6" />
+              </motion.button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <PetForm closeModal={handleClose} user={user} pet={selectedPet} />
+            </DialogContent>
+          </Dialog>
         </div>
-        {/* Modal */}
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 
-              {/* Contenido del Modal */}
-              <PetForm closeModal={closeModal} />
-
-          </div>
-        )}
-      </div>
-
-    </div>
-
-
+        <AnimatePresence>
+          {pets.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center text-gray-500 py-8"
+            >
+              No tienes mascotas registradas aún
+            </motion.div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 overflow-y-auto">
+              <AnimatePresence>
+                {pets.map((pet) => (
+                  <PetCard
+                    key={pet.id}
+                    pet={pet}
+                    onDelete={handleDelete}
+                    onUpdate={handleUpdate}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
   );
 };
 

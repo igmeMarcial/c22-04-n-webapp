@@ -1,8 +1,9 @@
 "use client";
 
+import { User } from "next-auth";
 import { useEffect, useState } from "react";
 
-const BookingStatusList = () => {
+const BookingStatusList = ({ user }: { user: User }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,14 +75,15 @@ const BookingStatusList = () => {
                     className="bg-gray-50 p-4 rounded-md shadow-sm"
                   >
                     <p className="text-sm font-medium truncate">
-                      {booking.pet_name || "Sin nombre"} &mdash; {booking.service_name}
+                      {booking.pet_name || "Sin nombre"} &mdash;{" "}
+                      {booking.service_name}
                     </p>
                     <p className="text-xs text-gray-500">
                       Cuidador: {booking.caregiver_name || "Sin cuidador"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {new Date(booking.start_time).toLocaleDateString("es-ES")} - $
-                      {Number(booking.total_price).toFixed(2)}
+                      {new Date(booking.start_time).toLocaleDateString("es-ES")}{" "}
+                      - ${Number(booking.total_price).toFixed(2)}
                     </p>
                   </div>
                 ))
