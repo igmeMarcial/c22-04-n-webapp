@@ -1,198 +1,158 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Eye, Edit, Save, X } from "lucide-react";
-import { getCaregiverProfileById, createCaregiverProfile, updateCaregiverProfile } from "@/actions/caregivers-actions";
+import React, { useState } from "react";
+import {  createCaregiverProfile } from "@/actions/caregivers-actions";
 
-interface CaregiverProfileType {
-  id: number;
-  userId: string;
-  experience: string | null;
-  description: string | null;
-  coverage_radius_KM: number;
-  verified: number;
-  verification_date: Date | null;
-  average_rating: number;
-  total_reviews: number;
-  rates?: { id: number; serviceId: string; base_price: number; additional_hour_price: number }[];  
-  availability?: { id: number; weekday: number; start_time: string; end_time: string }[];  
+interface CaregiverProfileData {
+    userId: string;
+    experience: string;
+    description: string;
+    coverage_radius_KM: number;
+    verified: number;
+    verification_date: Date;
+  }
+
+interface UserType {
+    id: string;
+    // Add other user properties if needed
 }
 
-const CaregiverProfile = ({ user }) => {
-  const [profile, setProfile] = useState<CaregiverProfileType | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedProfile, setUpdatedProfile] = useState({
-    experience: "",
-    description: "",
-    coverage_radius_KM: 0,
-    verified: 0,
-    verification_date: new Date(),
-  });
+const CreateCaregiverProfile  = ({ user }: { user: UserType }) => {
+    const [formData, setFormData] = useState<CaregiverProfileData>({
+        userId: user.id,
+        experience: "",
+        description: "",
+        coverage_radius_KM: 0,
+        verified: 0,
+        verification_date: new Date(),
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  // Cargar datos del perfil
-  useEffect(() => {
-    const loadProfile = async () => {
-      const data = await getCaregiverProfileById(user.id);
-      if (!data) {
-        // Crear un nuevo perfil con datos predeterminados
-        const newProfile = await createCaregiverProfile({
-          userId: user.id, // Agregar el ID del usuario si es necesario
-          experience: "Sin experiencia",
-          description: "Descripción no proporcionada",
-          coverage_radius_KM: 0,
-          verified: 0,
-          verification_date: new Date(),
-          average_rating: 0,
-          total_reviews: 0,
-          rates: [], // Agregar array vacío si no tienes tarifas
-          availability: [], // Agregar array vacío si no tienes disponibilidad
-        });
-        setProfile(newProfile);
-      } else {
-        setProfile(data);
-      }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
-   
-    loadProfile();
-   }, [user.id]);
-   
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-    setUpdatedProfile(profile || {});
-  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setUpdatedProfile({ ...updatedProfile, [name]: value });
-  };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+    
+        const dataToSend = {
+            ...formData,
+        };
+    
+        console.log(dataToSend); // Verifica los datos
+    
+        try {
+            await createCaregiverProfile(dataToSend);
+        } catch (err) {
+            setError("Hubo un error al crear el perfil");
+            setIsSubmitting(false);
+        }
+    };
+    
+    
 
-  const handleSave = async () => {
-    // Verifica que el perfil tenga todos los datos necesarios
-    if (!updatedProfile || Object.keys(updatedProfile).length === 0) {
-      alert("No hay cambios para guardar");
-      return;
-    }
-   
-    // Asegúrate de que los datos sean correctos antes de actualizar
-    const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
-    if (updatedData) {
-      setProfile(updatedData);
-      setIsEditing(false);
-    } else {
-      alert("Error al guardar los cambios");
-    }
-   };
-   
-
-  if (profile === null && !isEditing) {
     return (
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Perfil del Cuidador</h1>
-        <div className="bg-white p-4 rounded shadow mb-6">
-          <h2 className="text-xl font-semibold">Crea tu perfil</h2>
-          <form>
-            <div className="mt-4 space-y-2">
-              <label>Experiencia</label>
-              <input
-                type="text"
-                name="experience"
-                value={updatedProfile.experience}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-              <label>Descripción</label>
-              <textarea
-                name="description"
-                value={updatedProfile.description}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-              <label>Radio de Cobertura (KM)</label>
-              <input
-                type="number"
-                name="coverage_radius_KM"
-                value={updatedProfile.coverage_radius_KM}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-              <button
-                type="button"
-                onClick={handleSave}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Guardar Perfil
-              </button>
-            </div>
-          </form>
+        <div className="p-6 max-w-2xl mx-auto bg-white rounded shadow-md">
+            <h2 className="text-2xl font-bold mb-4">Crear Perfil de Cuidador</h2>
+
+            {error && <div className="bg-red-500 text-white p-2 rounded mb-4">{error}</div>}
+
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
+                        Experiencia
+                    </label>
+                    <input
+                        type="text"
+                        id="experience"
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                        Descripción
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="coverage_radius_KM" className="block text-sm font-medium text-gray-700">
+                        Radio de Cobertura (KM)
+                    </label>
+                    <input
+                        type="number"
+                        id="coverage_radius_KM"
+                        name="coverage_radius_KM"
+                        value={formData.coverage_radius_KM}
+                        onChange={handleChange}
+                        required
+                        min={0}
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="verified" className="block text-sm font-medium text-gray-700">
+                        Verificado
+                    </label>
+                    <select
+                        id="verified"
+                        name="verified"
+                        value={formData.verified}
+                        onChange={(e) => setFormData({ ...formData, verified: parseInt(e.target.value) })}
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value={0}>No</option>
+                        <option value={1}>Sí</option>
+                    </select>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="verification_date" className="block text-sm font-medium text-gray-700">
+                        Fecha de Verificación
+                    </label>
+                    <input
+                        type="date"
+                        id="verification_date"
+                        name="verification_date"
+                        value={formData.verification_date.toISOString().split("T")[0]} // Formatear a fecha ISO
+                        onChange={(e) => setFormData({ ...formData, verification_date: new Date(e.target.value) })}
+                        required
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                </div>
+
+                <div className="mt-4 flex justify-end">
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300"
+                    >
+                        {isSubmitting ? "Guardando..." : "Guardar Perfil"}
+                    </button>
+                </div>
+            </form>
         </div>
-      </div>
     );
-  }
-
-  if (!profile) {
-    return <div className="flex items-center justify-center h-screen">Cargando...</div>;
-  }
-
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Perfil del Cuidador</h1>
-
-      {/* Información del perfil */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Información Básica</h2>
-          <button
-            className="flex items-center gap-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-            onClick={handleEditToggle}
-          >
-            <Edit size={16} /> {isEditing ? "Cancelar" : "Editar"}
-          </button>
-        </div>
-        <div className="mt-4 space-y-2">
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="experience"
-                value={updatedProfile.experience}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-              <textarea
-                name="description"
-                value={updatedProfile.description}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="number"
-                name="coverage_radius_KM"
-                value={updatedProfile.coverage_radius_KM}
-                onChange={handleInputChange}
-                className="w-full border p-2 rounded"
-              />
-            </>
-          ) : (
-            <>
-              <p><strong>Experiencia:</strong> {profile.experience || "No proporcionado"}</p>
-              <p><strong>Descripción:</strong> {profile.description || "No proporcionado"}</p>
-              <p><strong>Radio de Cobertura:</strong> {profile.coverage_radius_KM || "N/A"} KM</p>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Botón para guardar los cambios */}
-      {isEditing && (
-        <button
-          onClick={handleSave}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Guardar Cambios
-        </button>
-      )}
-    </div>
-  );
 };
 
-export default CaregiverProfile;
+export default CreateCaregiverProfile;
