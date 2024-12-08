@@ -47,24 +47,23 @@ export const deleteCaregiverProfile = async (id: number) => {
 
 // Obtiene todos los perfiles de cuidadores
 export const getCaregiverProfiles = async () => {
-  try {
-    const caregivers = await prisma.caregiverProfile.findMany({
+    const profiles = await prisma.caregiverProfile.findMany({
       include: {
         rates: true,
         availability: true,
       },
-      orderBy: {
-        average_rating: 'desc',
-      },
     });
-
-    return caregivers;
-  } catch (error) {
-    console.error("Error fetching caregiver profiles:", error);
-    throw error;
-  }
-};
-
+  
+    return profiles.map((profile) => ({
+      ...profile,
+      average_rating: profile.average_rating.toString(), // Convert Decimal to string
+      rates: profile.rates.map((rate) => ({
+        ...rate,
+        base_price: rate.base_price.toString(), // Convert Decimal to string
+        additional_hour_price: rate.additional_hour_price.toString(), // Convert Decimal to string
+      })),
+    }));
+  };
 // Obtiene un perfil de cuidador por ID
 export const getCaregiverProfileById = async (id: number) => {
   try {
