@@ -10,6 +10,32 @@ interface CaregiverUpdateData {
   verification_date?: Date;
 }
 
+
+// Crea un perfil de cuidador
+export const createCaregiverProfile = async (data: {
+    experience: string;
+    description: string;
+    coverage_radius_KM: number;
+    verified: number;
+    verification_date: Date;
+  }) => {
+    try {
+      const newCaregiver = await prisma.caregiverProfile.create({
+        data: {
+          experience: data.experience,
+          description: data.description,
+          coverage_radius_KM: data.coverage_radius_KM,
+          verified: data.verified,
+          verification_date: data.verification_date,
+        },
+      });
+  
+      return newCaregiver;
+    } catch (error) {
+      console.error("Error creating caregiver profile:", error);
+      throw error;
+    }
+  };
 // Actualiza un perfil de cuidador
 export const updateCaregiverProfile = async (id: number, updatedData: CaregiverUpdateData) => {
   try {
