@@ -1,6 +1,6 @@
 'use server';
 import { prisma } from "@/lib/db";
-
+import { Decimal } from "@prisma/client/runtime/library";
 // Interfaz para datos de actualización del perfil del cuidador
 interface CaregiverUpdateData {
   experience?: string;
@@ -13,6 +13,7 @@ interface CaregiverUpdateData {
 
 // Crea un perfil de cuidador
 export const createCaregiverProfile = async (data: {
+    userId: string;
     experience: string;
     description: string;
     coverage_radius_KM: number;
@@ -27,6 +28,9 @@ export const createCaregiverProfile = async (data: {
           coverage_radius_KM: data.coverage_radius_KM,
           verified: data.verified,
           verification_date: data.verification_date,
+          average_rating: new Decimal(0),  // Usar Decimal en lugar de número entero
+          total_reviews: 0, // Assuming default value
+          user: { connect: { id: data.userId } },
         },
       });
   
@@ -36,6 +40,7 @@ export const createCaregiverProfile = async (data: {
       throw error;
     }
   };
+  
 // Actualiza un perfil de cuidador
 export const updateCaregiverProfile = async (id: number, updatedData: CaregiverUpdateData) => {
   try {
