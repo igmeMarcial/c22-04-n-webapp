@@ -140,7 +140,7 @@ const CaregiversList = () => {
                     </div>
                   )}
                 </div>
-                <p className="text-sx text-[#148E8F] mb-1">A {caregiver.coverage_radius_KM} Kilometros </p>
+                <p className="text-sm text-[#148E8F] mb-1">A {caregiver.coverage_radius_KM} Kilometros</p>
                 <p className="text-sm text-gray-500">{caregiver.total_reviews} Opiniones</p>
                 {!caregiver.average_rating && (
                   <p className="text-sm text-gray-500 italic">Sin calificaciones</p>
@@ -151,25 +151,47 @@ const CaregiversList = () => {
         </AnimatePresence>
       </div>
 
-
       {/* Columna derecha: Detalles del cuidador */}
       <div className="col-span-2 border rounded-lg bg-white shadow p-4">
         {selectedCaregiver ? (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Perfil de {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</h2>
+            <h2 className="text-2xl font-bold mb-4 text-[#222F92]">
+              Perfil de {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}
+            </h2>
 
             {/* Información general */}
             <div className="grid grid-cols-[1fr_2fr] gap-6">
               <div>
-                {/* Información general */}
-                <h3 className="text-xl font-semibold pb-2 border-b">Información general</h3>
-                <p><i className="fas fa-user mr-2"></i><strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</p>
-                <p><i className="fas fa-envelope mr-2"></i><strong>Email:</strong> {selectedCaregiver.user.email}</p>
-                <p><i className="fas fa-phone mr-2"></i><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
-                <p><i className="fas fa-align-left mr-2"></i><strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}</p>
-                <p><i className="fas fa-briefcase mr-2"></i><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
-                <p><i className="fas fa-map-marker-alt mr-2"></i><strong>Distancia (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
-                <p><i className="fas fa-star-half-alt mr-2"></i><strong>Calificación promedio: </strong>
+                <h3 className="text-xl font-semibold pb-2 border-b text-[#222F92]">
+                  Información general
+                </h3>
+                <p>
+                  <i className="fas fa-user mr-2 text-blue-500"></i>
+                  <strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}
+                </p>
+                <p>
+                  <i className="fas fa-envelope mr-2 text-blue-500"></i>
+                  <strong>Email:</strong> {selectedCaregiver.user.email}
+                </p>
+                <p>
+                  <i className="fas fa-phone mr-2 text-blue-500"></i>
+                  <strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}
+                </p>
+                <p>
+                  <i className="fas fa-align-left mr-2 text-blue-500"></i>
+                  <strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}
+                </p>
+                <p>
+                  <i className="fas fa-briefcase mr-2 text-blue-500"></i>
+                  <strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}
+                </p>
+                <p>
+                  <i className="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+                  <strong>Distancia (KM):</strong> {selectedCaregiver.coverage_radius_KM}
+                </p>
+                <p>
+                  <i className="fas fa-star-half-alt mr-2 text-yellow-400"></i>
+                  <strong>Calificación promedio:</strong>{" "}
                   {selectedCaregiver.average_rating && (
                     <>
                       {[...Array(5)].map((_, i) => (
@@ -187,12 +209,13 @@ const CaregiversList = () => {
               </div>
 
               <div>
-                {/* Servicios que ofrece y tarifas */}
-                <h3 className="text-xl font-semibold pb-2 border-b">Servicios y tarifas</h3>
+                <h3 className="text-xl font-semibold pb-2 border-b text-[#222F92]">
+                  Servicios y tarifas
+                </h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                   {selectedCaregiver.rates.map((rate) => (
                     <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <p className="font-bold text-lg">{rate.service.name}</p>
+                      <p className="font-bold text-lg text-[#148E8F]">{rate.service.name}</p>
                       <p className="text-sm text-gray-500">{rate.service.description}</p>
                       <p>
                         <strong>Precio por hora:</strong> ${rate.base_price}
@@ -203,7 +226,6 @@ const CaregiversList = () => {
                     </div>
                   ))}
                 </div>
-
               </div>
             </div>
 
@@ -254,16 +276,13 @@ const CaregiversList = () => {
             {/* Botón para abrir el modal */}
             <button
               onClick={openModal}
-              className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              className="mt-6 px-4 py-2 bg-[#222F92] text-white rounded-lg hover:bg-blue-600"
             >
               Agendar servicio
             </button>
-
           </div>
-
-
         ) : (
-          <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
+          <p className="text-center text-gray-500">Seleccione un cuidador de la lista para ver detalles.</p>
         )}
 
 
@@ -279,7 +298,8 @@ const CaregiversList = () => {
           </div>
         )
       }
-    </div >
+    </div>
+
   );
 };
 
