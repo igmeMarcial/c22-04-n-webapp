@@ -62,7 +62,10 @@ interface Caregiver {
   updatedAt: string;
 }
 
-const CaregiversList = () => {
+interface CaregiverListProps {
+  user: User;
+}
+const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
   const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
   const [selectedCaregiver, setSelectedCaregiver] = useState<Caregiver | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -294,7 +297,7 @@ const CaregiversList = () => {
         isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-4 rounded-lg shadow-lg ">
-              <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} />
+              <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} user={user} />
             </div>
           </div>
         )
