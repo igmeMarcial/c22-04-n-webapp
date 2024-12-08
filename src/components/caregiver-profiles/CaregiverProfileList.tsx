@@ -143,7 +143,9 @@ const CaregiversList = () => {
       <div className="col-span-2 border rounded-lg bg-white shadow p-4">
         {selectedCaregiver ? (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Detalles del cuidador</h2>
+            <h2 className="text-2xl font-bold mb-4">Perfil de {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</h2>
+
+            {/* Información general */}
             <div className="grid grid-cols-[1fr_2fr] gap-6">
               <div>
                 {/* Información general */}
