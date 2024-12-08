@@ -4,23 +4,44 @@ import { motion } from "framer-motion";
 import { Eye, Edit, Save, X } from "lucide-react";
 import { getCaregiverProfileById, createCaregiverProfile, updateCaregiverProfile } from "@/actions/caregivers-actions";
 
+interface CaregiverProfileType {
+  id: number;
+  userId: string;
+  experience: string | null;
+  description: string | null;
+  coverage_radius_KM: number;
+  verified: number;
+  verification_date: Date | null;
+  average_rating: number;
+  total_reviews: number;
+  rates?: { id: number; serviceId: string; base_price: number; additional_hour_price: number }[];
+  availability?: { id: number; weekday: number; start_time: string; end_time: string }[];
+}
+
 const CaregiverProfile = ({ user }) => {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<CaregiverProfileType | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [updatedProfile, setUpdatedProfile] = useState({});
 
   // Cargar datos del perfil
   useEffect(() => {
     const loadProfile = async () => {
-      const data = await getCaregiverProfileById(user.id);
-      if (!data) {
-        // Crear un nuevo perfil si no existe
-        const newProfile = await createCaregiverProfile(user.id);
-        setProfile(newProfile);
-      } else {
-        setProfile(data);
-      }
-    };
+        const data = await getCaregiverProfileById(user.id);
+        if (!data) {
+          // Crear un nuevo perfil si no existe, pasando los datos completos
+          const newProfile = await createCaregiverProfile({
+            experience: "Sin experiencia", // Aquí debes pasar los datos adecuados
+            description: "Descripción no proporcionada",
+            coverage_radius_KM: 0,
+            verified: 0,
+            verification_date: new Date(),
+          });
+          setProfile(newProfile);
+        } else {
+          setProfile(data);
+        }
+      };
+      
     loadProfile();
   }, [user.id]);
 
@@ -30,7 +51,7 @@ const CaregiverProfile = ({ user }) => {
   };
 
   const handleSave = async () => {
-    const updatedData = await updateCaregiverProfile(updatedProfile);
+    const updatedData = await updateCaregiverProfile(user.id, updatedProfile);
     setProfile(updatedData);
     setIsEditing(false);
   };
