@@ -42,10 +42,12 @@ const Header = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center space-x-2">
-            <SvgLogo className="w-8 h-8 md:w-10 md:h-10" />
-            <span className="text-lg font-semibold text-[#222F92] hidden md:block">
-              Pet Care
-            </span>
+            <Link className="flex items-center space-x-2" href={"/"}>
+              <SvgLogo className="w-8 h-8 md:w-10 md:h-10" />
+              <span className="text-lg font-semibold text-[#222F92] hidden md:block">
+                Pet Care
+              </span>
+            </Link>
           </div>
 
           {/* Desktop Menu */}

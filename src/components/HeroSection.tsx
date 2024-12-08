@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { HeartIcon, PawPrintIcon, SparklesIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -31,13 +32,15 @@ const HeroSection = () => {
 
           <div className="flex space-x-4">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                size="lg"
-                className="bg-[#222F92] hover:bg-[#222F92]/90 transition-colors"
-              >
-                <PawPrintIcon className="mr-2 h-5 w-5" />
-                Explorar servicios
-              </Button>
+              <Link href={"/pets"}>
+                <Button
+                  size="lg"
+                  className="bg-[#222F92] hover:bg-[#222F92]/90 transition-colors"
+                >
+                  <PawPrintIcon className="mr-2 h-5 w-5" />
+                  Explorar servicios
+                </Button>
+              </Link>
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
