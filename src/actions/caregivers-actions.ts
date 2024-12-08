@@ -1,6 +1,8 @@
 'use server';
 import { prisma } from "@/lib/db";
 import { Decimal } from "@prisma/client/runtime/library";
+import { auth } from "../../auth";  
+import { revalidatePath } from "next/cache";
 // Interfaz para datos de actualización del perfil del cuidador
 interface CaregiverUpdateData {
   experience?: string;
@@ -41,26 +43,73 @@ export const createCaregiverProfile = async (data: {
     }
   };
   
-// Actualiza un perfil de cuidador
-export const updateCaregiverProfile = async (id: number, updatedData: CaregiverUpdateData) => {
+
+
+// Función auxiliar para transformar Decimals a números
+function transformDecimalToNumber(data: any) {
+  const transformed = { ...data };
+  for (const key in transformed) {
+    if (transformed[key] instanceof Decimal) {
+      transformed[key] = Number(transformed[key].toString());
+    }
+  }
+  return transformed;
+}
+
+
+export async function updateCaregiverProfile(updatedData: CaregiverUpdateData) {
   try {
+    // Validar la sesión del usuario
+    const session = await auth();
+    if (!session?.user || !session.user.id) {
+      return {
+        error: "No estás autenticado. Por favor, inicia sesión."
+      };
+    }
+
+   
+
+    const userId = session.user.id;
+// Validar que al menos hay un campo para actualizar
+    if (Object.keys(updatedData).length === 0) {
+      console.error("updateCaregiverProfile: No fields to update");
+      return {
+        error: "No hay campos para actualizar."
+      };
+    }
+
+
+    // Limpiar los datos antes de la actualización
+    const cleanData: CaregiverUpdateData = {};
+    
+    if (updatedData.experience !== undefined) cleanData.experience = updatedData.experience;
+    if (updatedData.description !== undefined) cleanData.description = updatedData.description;
+    if (updatedData.coverage_radius_KM !== undefined) cleanData.coverage_radius_KM = Number(updatedData.coverage_radius_KM);
+    if (updatedData.verified !== undefined) cleanData.verified = Number(updatedData.verified);
+    if (updatedData.verification_date !== undefined) {
+      cleanData.verification_date = new Date(updatedData.verification_date);
+    }
+
     const updatedCaregiver = await prisma.caregiverProfile.update({
-      where: { id },
-      data: {
-        ...(updatedData.experience && { experience: updatedData.experience }),
-        ...(updatedData.description && { description: updatedData.description }),
-        ...(updatedData.coverage_radius_KM && { coverage_radius_KM: updatedData.coverage_radius_KM }),
-        ...(updatedData.verified !== undefined && { verified: updatedData.verified }),
-        ...(updatedData.verification_date && { verification_date: updatedData.verification_date }),
-      },
+      where: { userId },
+      data: cleanData,
     });
 
-    return updatedCaregiver;
+    const transformedData = transformDecimalToNumber(updatedCaregiver);
+
+    revalidatePath('/dashboard/caretaker/profile');
+    
+    return {
+      success: true,
+      data: transformedData
+    };
   } catch (error) {
-    console.error("Error updating caregiver profile:", error);
-    throw error;
+    console.error("Error actualizando el perfil del cuidador:", error);
+    return {
+      error: "Hubo un error al actualizar el perfil. Por favor, intente nuevamente."
+    };
   }
-};
+}
 
 // Elimina un perfil de cuidador
 export const deleteCaregiverProfile = async (id: number) => {

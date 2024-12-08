@@ -146,6 +146,10 @@ function CaregiverMain() {
     );
   };
   console.log(profile);
+  console.log(bookings);
+  console.log(reviews);
+  console.log(services);
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
