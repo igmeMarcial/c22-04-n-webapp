@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -28,9 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/Select";
-import { breedOptions } from "../constant/pet";
-import { UploadManyToS3 } from "@/lib/s3/action";
+import { breedOptions, uplaodImagesTest } from "../constant/pet";
+import { MediaDto } from "@/lib/s3/action";
 import { Pet } from "./PetsList";
+import { updatePet } from "@/actions/pets-action";
 
 interface PetFormProps {
   closeModal?: () => void;
@@ -96,53 +96,52 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
 
   const onSubmit = async (data: PetFormData) => {
     try {
-      const endpoint = isEditing ? `/api/pets/${pet.id}` : "/api/pets";
-
-      const method = isEditing ? "PUT" : "POST";
-
-      if (images.length <= 0) {
-        toast.error("Fotos de tu mascota es importante");
+      if (!isEditing && images.length <= 0) {
+        toast.error("Fotos de tu mascota son importantes");
         return;
       }
       setLoading(true);
-      //Cambiar aqui para no subir archivos a la nube
-      const uplaodImages = [
-        {
-          fileName: "pexels-silas-leupold-463964-1165082.jpg",
-          publicUrl:
-            "https://plazaperu.s3.us-east-1.amazonaws.com/pexels-silas-leupold-463964-1165082.jpg",
-        },
-      ];
-      //evita subir a la nube archivos
-      // const uplaodImages = await UploadManyToS3(images);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}${endpoint}`,
-        {
-          method: method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user.id,
-            ...data,
-            images: uplaodImages,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          isEditing
-            ? "Error al actualizar la mascota"
-            : "Error al registrar la mascota"
-        );
+      let uploadedImages: MediaDto[] = [];
+      if (images.length > 0) {
+        //aqui cambiamos si se ve subir a amzon s3
+        // uploadedImages = await UploadManyToS3(images);
+        uploadedImages = uplaodImagesTest;
       }
+      const finalImages = isEditing
+        ? [...pet.images, ...uploadedImages]
+        : uploadedImages;
 
-      toast.success(
-        isEditing
-          ? "¡Mascota actualizada exitosamente!"
-          : "¡Mascota registrada exitosamente!"
-      );
-      closeModal?.();
+      if (isEditing) {
+        const updatedPet = await updatePet(pet.id, {
+          ...data,
+          images: finalImages,
+        });
+        toast.success("Mascota actualizada exitosamente!");
+        console.log(updatedPet);
+      } else {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/pets`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user.id,
+              ...data,
+              images: uploadedImages,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al crear la mascota");
+        }
+        const createdPet = await response.json();
+        toast.success("Mascota creada exitosamente!");
+        console.log(createdPet);
+      }
       setImages([]);
+      form.reset();
+      closeModal?.();
     } catch (error) {
       console.log(error);
       toast.error("Error al registrar la mascota");

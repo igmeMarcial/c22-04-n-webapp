@@ -78,3 +78,13 @@ export const breedOptions: Record<string, string[]> = {
     "Otro"
   ],
 };
+
+
+
+ export const uplaodImagesTest = [
+        {
+          fileName: "pexels-silas-leupold-463964-1165082.jpg",
+          publicUrl:
+            "https://plazaperu.s3.us-east-1.amazonaws.com/pexels-silas-leupold-463964-1165082.jpg",
+        },
+      ];

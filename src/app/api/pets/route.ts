@@ -21,7 +21,6 @@ export async function GET(req: Request) {
         owner: true, // Include owner data if needed
       },
     });
-    console.log(JSON.stringify(pets))
     return NextResponse.json(pets, { status: 200 });
   } catch (error) {
     console.error('Error fetching pets:', error);

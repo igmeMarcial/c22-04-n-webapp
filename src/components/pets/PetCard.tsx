@@ -25,6 +25,7 @@ import { PawPrint, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "../ui/Badge";
 import { Pet } from "./PetsList";
+import { deletePet } from "@/actions/pets-action";
 
 interface PetCardProps {
   pet: Pet;
@@ -40,17 +41,8 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, onUpdate }) => {
     setIsDeleting(true);
     console.log(pet.id);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/pets/${pet.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al eliminar la mascota");
-      }
-
+      await deletePet(pet.id);
+      toast.success("Pet deleted successfully!");
       onDelete(pet.id);
       toast.success("Mascota eliminada exitosamente");
     } catch (error) {

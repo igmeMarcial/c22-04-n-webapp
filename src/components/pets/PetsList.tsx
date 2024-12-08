@@ -137,7 +137,7 @@ const PetsList: React.FC<PetsListProps> = ({ user }) => {
               No tienes mascotas registradas aún
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 overflow-y-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 overflow-x-auto">
               <AnimatePresence>
                 {pets.map((pet) => (
                   <PetCard
