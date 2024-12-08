@@ -120,8 +120,8 @@ const CaregiversList = () => {
                       <i
                         key={i}
                         className={`fas fa-star ${i < Math.round(Number(caregiver.average_rating))
-                            ? "text-yellow-400"
-                            : "text-gray-300"
+                          ? "text-yellow-400"
+                          : "text-gray-300"
                           }`}
                       ></i>
                     ))}
@@ -144,34 +144,35 @@ const CaregiversList = () => {
         {selectedCaregiver ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Detalles del cuidador</h2>
-            <h3 className="text-xl font-semibold pb-2 border-b">Información general</h3>
-            <p><strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</p>
-            <p><strong>Email:</strong> {selectedCaregiver.user.email}</p>
-            <p><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
-            <p><strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}</p>
-            <p><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
-            <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
-            <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
+            <div className="grid grid-cols-[1fr_2fr] gap-6">
+              <div>
+                {/* Información general */}
+                <h3 className="text-xl font-semibold pb-2 border-b">Información general</h3>
+                <p><strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}</p>
+                <p><strong>Email:</strong> {selectedCaregiver.user.email}</p>
+                <p><strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}</p>
+                <p><strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}</p>
+                <p><strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}</p>
+                <p><strong>Radio de cobertura (KM):</strong> {selectedCaregiver.coverage_radius_KM}</p>
+                <p><strong>Calificación promedio:</strong> {selectedCaregiver.average_rating || "Sin calificaciones"}</p>
+              </div>
 
-            {/* Botón para abrir el modal */}
-            <button
-              onClick={openModal}
-              className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Agendar servicio
-            </button>
-            {/* Servicios que ofrece y tarifas */}
-            <h3 className="text-xl font-semibold mt-6 mb-4">Servicios y tarifas</h3>
-            <div className="flex flex-wrap gap-4">
-              {selectedCaregiver.rates.map((rate) => (
-                <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow mb-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4">
-                  <p className="font-bold text-lg">{rate.service.name}</p>
-                  <p className="text-sm text-gray-500">{rate.service.description}</p>
-                  <p><strong>Precio por hora:</strong> ${rate.base_price}</p>
-                  <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
+              <div>
+                {/* Servicios que ofrece y tarifas */}
+                <h3 className="text-xl font-semibold pb-2 border-b">Servicios y tarifas</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {selectedCaregiver.rates.map((rate) => (
+                    <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow">
+                      <p className="font-bold text-lg">{rate.service.name}</p>
+                      <p className="text-sm text-gray-500">{rate.service.description}</p>
+                      <p><strong>Precio por hora:</strong> ${rate.base_price}</p>
+                      <p><strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
+
 
 
             {/* Tabla de disponibilidad */}
@@ -222,17 +223,27 @@ const CaregiversList = () => {
           <p className="text-center text-gray-500">Selecciona un cuidador para ver los detalles</p>
         )}
 
+        {/* Botón para abrir el modal */}
+        <button
+          onClick={openModal}
+          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Agendar servicio
+        </button>
+
 
       </div>
       {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg ">
-            <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} />
+      {
+        isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-4 rounded-lg shadow-lg ">
+              <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} />
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 };
 
