@@ -9,8 +9,8 @@ export default async function PetDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const petId = parseInt(params.id, 10);
-  const pet = await getPetById(petId);
+  const petId = params?.id;
+  const pet = await getPetById(parseInt(petId, 10));
 
   if (!pet) {
     redirect("/pets");

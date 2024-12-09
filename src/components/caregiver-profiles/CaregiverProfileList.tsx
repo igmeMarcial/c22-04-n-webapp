@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, PawPrint } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { PawPrint } from "lucide-react";
+
 import CreateBookingForm from "../booking/CreateBookingForm";
+import { User } from "../../../types/types";
 
 interface Caregiver {
   id: number;
@@ -67,7 +67,9 @@ interface CaregiverListProps {
 }
 const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
   const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
-  const [selectedCaregiver, setSelectedCaregiver] = useState<Caregiver | null>(null);
+  const [selectedCaregiver, setSelectedCaregiver] = useState<Caregiver | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -101,16 +103,24 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
     return <div className="text-center mt-4 text-red-500">Error: {error}</div>;
   }
 
-  const weekdays = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-
+  const weekdays = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
 
   return (
     <div className="grid grid-cols-3 gap-4 h-[calc(100vh-126px)] p-4">
       {/* Columna izquierda: Lista de cuidadores */}
       <div className="col-span-1 border rounded-lg bg-white shadow p-4 overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-[#222F92]">Lista de cuidadores</h2>
+          <h2 className="text-2xl font-bold text-[#222F92]">
+            Lista de cuidadores
+          </h2>
         </div>
         <AnimatePresence>
           {caregivers.map((caregiver) => {
@@ -118,8 +128,11 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
             return (
               <motion.div
                 key={caregiver.id}
-                className={`p-4 border-b cursor-pointer rounded-lg ${isSelected ? "bg-blue-100 border-blue-500" : "hover:bg-gray-100"
-                  }`}
+                className={`p-4 border-b cursor-pointer rounded-lg ${
+                  isSelected
+                    ? "bg-blue-100 border-blue-500"
+                    : "hover:bg-gray-100"
+                }`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -135,19 +148,26 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                       {[...Array(5)].map((_, i) => (
                         <i
                           key={i}
-                          className={`fas fa-star ${i < Math.round(Number(caregiver.average_rating))
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                            }`}
+                          className={`fas fa-star ${
+                            i < Math.round(Number(caregiver.average_rating))
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         ></i>
                       ))}
                     </div>
                   )}
                 </div>
-                <p className="text-sm text-[#148E8F] mb-1">A {caregiver.coverage_radius_KM} Kilometros</p>
-                <p className="text-sm text-gray-500">{caregiver.total_reviews} Opiniones</p>
+                <p className="text-sm text-[#148E8F] mb-1">
+                  A {caregiver.coverage_radius_KM} Kilometros
+                </p>
+                <p className="text-sm text-gray-500">
+                  {caregiver.total_reviews} Opiniones
+                </p>
                 {!caregiver.average_rating && (
-                  <p className="text-sm text-gray-500 italic">Sin calificaciones</p>
+                  <p className="text-sm text-gray-500 italic">
+                    Sin calificaciones
+                  </p>
                 )}
               </motion.div>
             );
@@ -160,7 +180,8 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
         {selectedCaregiver ? (
           <div>
             <h2 className="text-2xl font-bold mb-4 text-[#222F92]">
-              Perfil de {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}
+              Perfil de {selectedCaregiver.user.name}{" "}
+              {selectedCaregiver.user.last_name}
             </h2>
 
             {/* Información general */}
@@ -171,7 +192,8 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                 </h3>
                 <p>
                   <i className="fas fa-user mr-2 text-blue-500"></i>
-                  <strong>Nombre:</strong> {selectedCaregiver.user.name} {selectedCaregiver.user.last_name}
+                  <strong>Nombre:</strong> {selectedCaregiver.user.name}{" "}
+                  {selectedCaregiver.user.last_name}
                 </p>
                 <p>
                   <i className="fas fa-envelope mr-2 text-blue-500"></i>
@@ -179,19 +201,23 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                 </p>
                 <p>
                   <i className="fas fa-phone mr-2 text-blue-500"></i>
-                  <strong>Teléfono:</strong> {selectedCaregiver.user.phone || "No especificado"}
+                  <strong>Teléfono:</strong>{" "}
+                  {selectedCaregiver.user.phone || "No especificado"}
                 </p>
                 <p>
                   <i className="fas fa-align-left mr-2 text-blue-500"></i>
-                  <strong>Descripción:</strong> {selectedCaregiver.description || "No disponible"}
+                  <strong>Descripción:</strong>{" "}
+                  {selectedCaregiver.description || "No disponible"}
                 </p>
                 <p>
                   <i className="fas fa-briefcase mr-2 text-blue-500"></i>
-                  <strong>Experiencia:</strong> {selectedCaregiver.experience || "No especificada"}
+                  <strong>Experiencia:</strong>{" "}
+                  {selectedCaregiver.experience || "No especificada"}
                 </p>
                 <p>
                   <i className="fas fa-map-marker-alt mr-2 text-blue-500"></i>
-                  <strong>Distancia (KM):</strong> {selectedCaregiver.coverage_radius_KM}
+                  <strong>Distancia (KM):</strong>{" "}
+                  {selectedCaregiver.coverage_radius_KM}
                 </p>
                 <p>
                   <i className="fas fa-star-half-alt mr-2 text-yellow-400"></i>
@@ -201,10 +227,12 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                       {[...Array(5)].map((_, i) => (
                         <i
                           key={i}
-                          className={`fas fa-star ${i < Math.round(Number(selectedCaregiver.average_rating))
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                            }`}
+                          className={`fas fa-star ${
+                            i <
+                            Math.round(Number(selectedCaregiver.average_rating))
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         ></i>
                       ))}
                     </>
@@ -218,14 +246,22 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                 </h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                   {selectedCaregiver.rates.map((rate) => (
-                    <div key={rate.id} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <p className="font-bold text-lg text-[#148E8F]">{rate.service.name}</p>
-                      <p className="text-sm text-gray-500">{rate.service.description}</p>
+                    <div
+                      key={rate.id}
+                      className="p-4 bg-gray-100 rounded-lg shadow"
+                    >
+                      <p className="font-bold text-lg text-[#148E8F]">
+                        {rate.service.name}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {rate.service.description}
+                      </p>
                       <p>
                         <strong>Precio por hora:</strong> ${rate.base_price}
                       </p>
                       <p>
-                        <strong>Precio por hora adicional:</strong> ${rate.additional_hour_price}
+                        <strong>Precio por hora adicional:</strong> $
+                        {rate.additional_hour_price}
                       </p>
                     </div>
                   ))}
@@ -233,10 +269,10 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
               </div>
             </div>
 
-
-
             {/* Tabla de disponibilidad */}
-            <h3 className="text-xl font-semibold mt-6 mb-4">Horarios disponibles</h3>
+            <h3 className="text-xl font-semibold mt-6 mb-4">
+              Horarios disponibles
+            </h3>
             <div className="grid grid-cols-7 gap-4">
               {weekdays.map((day, index) => {
                 const slots = selectedCaregiver.availability.filter(
@@ -271,7 +307,9 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-sm text-gray-500">Sin horarios</span>
+                      <span className="text-sm text-gray-500">
+                        Sin horarios
+                      </span>
                     )}
                   </div>
                 );
@@ -286,24 +324,25 @@ const CaregiversList: React.FC<CaregiverListProps> = ({ user }) => {
             </button>
           </div>
         ) : (
-          <p className="text-center text-gray-500">Seleccione un cuidador de la lista para ver detalles.</p>
+          <p className="text-center text-gray-500">
+            Seleccione un cuidador de la lista para ver detalles.
+          </p>
         )}
-
-
-
       </div>
-      {/* Modal */}
-      {
-        isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-4 rounded-lg shadow-lg ">
-              <CreateBookingForm caregiver={selectedCaregiver} onClose={closeModal} user={user} />
-            </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg shadow-lg ">
+            {selectedCaregiver && (
+              <CreateBookingForm
+                caregiver={selectedCaregiver}
+                onClose={closeModal}
+                user={user}
+              />
+            )}
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
-
   );
 };
 

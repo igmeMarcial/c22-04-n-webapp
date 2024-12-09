@@ -115,12 +115,13 @@ model CaregiverProfile {
   bookings     Booking[]
   rates        CaregiverRate[]
   availability CaregiverAvailability[]
+  petRequests  CaregiverPetRequest[]
 
   @@map("caregiver_profiles")
 }
 
 model Pet {
-  id                   Int       @id @default(autoincrement())
+  id                   Int                   @id @default(autoincrement())
   userId               String
   name                 String
   species              String
@@ -130,11 +131,12 @@ model Pet {
   special_instructions String?
   medical_needs        String?
   is_active            Int
-  createdAt            DateTime  @default(now()) @map(name: "created_at")
-  updatedAt            DateTime  @default(now()) @updatedAt @map(name: "updated_at")
+  createdAt            DateTime              @default(now()) @map(name: "created_at")
+  updatedAt            DateTime              @default(now()) @updatedAt @map(name: "updated_at")
   images               Json?
-  owner                User      @relation(fields: [userId], references: [id])
+  owner                User                  @relation(fields: [userId], references: [id])
   bookings             Booking[]
+  caregiverRequests    CaregiverPetRequest[]
 
   @@map("pets")
 }
@@ -187,4 +189,20 @@ model CaregiverRate {
 
   @@unique([caregiverId, serviceId]) // Clave única compuesta
   @@map("caregiver_rates")
+}
+
+model CaregiverPetRequest {
+  id          Int      @id @default(autoincrement())
+  caregiverId Int
+  petId       Int
+  status      Int      @default(0) // 0: pending, 1: accepted, 2: rejected
+  message     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  caregiver CaregiverProfile @relation(fields: [caregiverId], references: [id])
+
+  pet Pet @relation(fields: [petId], references: [id])
+
+  @@map("caregiver_pet_requests")
 }

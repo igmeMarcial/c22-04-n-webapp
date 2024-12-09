@@ -1,11 +1,10 @@
-import { verify } from 'crypto';
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const CaregiverProfileForm: React.FC = () => {
   const [isFormVisible, setIsFormVisible] = useState(true); // Estado para mostrar/ocultar el formulario
   const [formData, setFormData] = useState({
     coverage_radius_KM: 0,
-    experience: '',
+    experience: "",
     verified: 0,
     average_rating: 0,
     total_reviews: 0,
@@ -16,10 +15,12 @@ const CaregiverProfileForm: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value, type } = e.target;
-    const parsedValue = type === 'number' ? Number(value) : value;
+    const parsedValue = type === "number" ? Number(value) : value;
     setFormData({ ...formData, [name]: parsedValue });
   };
 
@@ -30,30 +31,30 @@ const CaregiverProfileForm: React.FC = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch('/api/caregiver-profiles', {
-        method: 'POST',
+      const response = await fetch("/api/caregiver-profiles", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Error creating caregiver profile');
+        throw new Error(errorData.error || "Error creating caregiver profile");
       }
 
       const data = await response.json();
-      setSuccess('Perfil de cuidador creado con éxito!');
+      setSuccess("Perfil de cuidador creado con éxito!");
       setFormData({
         coverage_radius_KM: 0,
-        experience: '',
+        experience: "",
         verified: 0,
         average_rating: 0,
         total_reviews: 0,
       });
     } catch (err: any) {
-      setError(err.message || 'Error al crear el perfil del cuidador');
+      setError(err.message || "Error al crear el perfil del cuidador");
     } finally {
       setLoading(false);
     }
@@ -71,24 +72,31 @@ const CaregiverProfileForm: React.FC = () => {
     <>
       <div
         className={`${
-          isFormVisible ? 'block' : 'hidden'
+          isFormVisible ? "block" : "hidden"
         } fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50`}
         style={{
           backgroundImage: `url('/images/mi-imagen.jpg')`, // Cambia la ruta según donde esté la imagen
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg space-y-6 bg-opacity-90"
         >
-          <h2 className="text-xl font-bold text-center text-gray-800">Registrar nuevo perfil de cuidador</h2>
+          <h2 className="text-xl font-bold text-center text-gray-800">
+            Registrar nuevo perfil de cuidador
+          </h2>
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          {success && <p className="text-green-500 text-sm text-center">{success}</p>}
+          {success && (
+            <p className="text-green-500 text-sm text-center">{success}</p>
+          )}
 
           <div>
-            <label htmlFor="coverage_radius_KM" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="coverage_radius_KM"
+              className="block text-sm font-medium text-gray-700"
+            >
               Radio de cobertura (KM)
             </label>
             <input
@@ -102,7 +110,10 @@ const CaregiverProfileForm: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="experience"
+              className="block text-sm font-medium text-gray-700"
+            >
               Experiencia
             </label>
             <textarea
@@ -115,7 +126,10 @@ const CaregiverProfileForm: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="average_rating" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="average_rating"
+              className="block text-sm font-medium text-gray-700"
+            >
               Rating promedio
             </label>
             <input
@@ -129,7 +143,10 @@ const CaregiverProfileForm: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="total_reviews" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="total_reviews"
+              className="block text-sm font-medium text-gray-700"
+            >
               Total de reseñas
             </label>
             <input
@@ -156,7 +173,7 @@ const CaregiverProfileForm: React.FC = () => {
               disabled={loading}
               className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              {loading ? 'Registrando...' : 'Registrar cuidador'}
+              {loading ? "Registrando..." : "Registrar cuidador"}
             </button>
           </div>
         </form>
@@ -167,12 +184,16 @@ const CaregiverProfileForm: React.FC = () => {
           className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800 font-sans"
           style={{
             backgroundImage: `url('/images/mi-imagen.jpg')`, // Cambia la ruta según donde esté la imagen
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         >
-          <h1 className="text-3xl font-bold">Bienvenido a la página de registro de cuidadores</h1>
-          <p className="mt-4 text-lg text-center">Aquí puedes modificar el estado de los cuidadores</p>
+          <h1 className="text-3xl font-bold">
+            Bienvenido a la página de registro de cuidadores
+          </h1>
+          <p className="mt-4 text-lg text-center">
+            Aquí puedes modificar el estado de los cuidadores
+          </p>
           <button
             onClick={handleReopen} // Llama a la función para reabrir el formulario
             className="mt-6 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"

@@ -23,6 +23,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Star, Clock, MapPin, CheckCircle, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "../ui/Badge";
+import CaregiverCreateService from "./CaregiverCreateService";
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -166,7 +167,7 @@ function CaregiverMain() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="h-auto">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="space-y-6">
           {/* Header */}
@@ -308,36 +309,40 @@ function CaregiverMain() {
             </TabsContent>
 
             <TabsContent value="servicios">
-              <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {services.map((service) => (
-                  <motion.div key={service.serviceId} variants={itemVariants}>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-xl">
-                          {service.service.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-2">
-                            <Clock className="text-[#148E8F]" />
-                            <span>
-                              Precio base: S/. {service.base_price}/hora
-                            </span>
+              {services.length === 0 ? (
+                <CaregiverCreateService />
+              ) : (
+                <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {services.map((service) => (
+                    <motion.div key={service.serviceId} variants={itemVariants}>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-xl">
+                            {service.service.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                              <Clock className="text-[#148E8F]" />
+                              <span>
+                                Precio base: S/. {service.base_price}/hora
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Calendar className="text-[#222F92]" />
+                              <span>
+                                Hora adicional: S/.{" "}
+                                {service.additional_hour_price}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="text-[#222F92]" />
-                            <span>
-                              Hora adicional: S/.{" "}
-                              {service.additional_hour_price}
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </motion.div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </TabsContent>
           </Tabs>
         </div>

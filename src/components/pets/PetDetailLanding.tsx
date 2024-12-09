@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pet, User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
-import { createBooking } from "@/actions/booking-actions";
+
 import {
   Carousel,
   CarouselContent,
@@ -29,6 +29,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { createCaregiverPetRequest } from "@/actions/booking-actions";
 
 interface PetWithOwner extends Pet {
   owner: Pick<User, "name" | "email" | "phone" | "address">;
@@ -60,17 +61,16 @@ const stagger = {
 export function PetDetailsLanding({ pet }: PetDetailsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const images = pet.images as PetImage[] | null;
-  const totalPrice = 100;
+  const message = `Me gustaria ser cuidador de su ${pet.name}`;
   const session = useSession();
   const handleCareRequest = async () => {
     if (!session) {
       redirect("/login");
-      return;
     }
 
     setIsLoading(true);
     try {
-      await createBooking(pet.id, totalPrice);
+      await createCaregiverPetRequest(pet.id, message);
       toast.success("¡Solicitud enviada con éxito!", {
         description:
           "Tu solicitud para cuidar a esta mascota ha sido registrada",
@@ -79,6 +79,7 @@ export function PetDetailsLanding({ pet }: PetDetailsProps) {
       toast.error("Error al procesar la solicitud", {
         description: "Por favor, intenta nuevamente más tarde.",
       });
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

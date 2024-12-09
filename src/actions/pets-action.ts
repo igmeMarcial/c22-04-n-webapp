@@ -61,42 +61,6 @@ export const deletePet = async (id: number) => {
     throw error; 
   }
 };
-
-
-
-/*
-export async function getPets() {
-  try {
-    const pets = await prisma.pet.findMany({
-      where: {
-        is_active: 1
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
-    return pets;
-  } catch (error) {
-    console.error('Error fetching pets:', error);
-    throw new Error('Failed to fetch pets');
-  }
-}
-
-export async function getPetById(id: number) {
-  try {
-    const pet = await prisma.pet.findUnique({
-      where: {
-        id: id
-      }
-    });
-    return pet;
-  } catch (error) {
-    console.error('Error fetching pet:', error);
-    throw new Error('Failed to fetch pet');
-  }
-}*/
-
-
 export async function getPets() {
   try {
     const pets = await prisma.pet.findMany({

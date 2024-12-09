@@ -43,8 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
     },
     {
       icon: <UserIcon className="h-5 w-5" />,
-      label: "Mi perfil",
-      href: `${basePath}/profile`,
+      label: user.role === "CARETAKER" ? "Mi perfil" : "Solicitudes",
+      href: user.role === "CARETAKER" ? "/profile" : `${basePath}/request`,
     },
     {
       icon: <Search className="h-5 w-5" />,

@@ -42,6 +42,7 @@ export async function updateUserRole(userId: string, data: FormData) {
             total_reviews: 0,
           },
         });
+        
       }
     }
     await prisma.user.update({

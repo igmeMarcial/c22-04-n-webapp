@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { User } from "../../../types/types";
 
 interface Caregiver {
   id: number;
@@ -73,6 +74,7 @@ interface FormData {
 interface Props {
   caregiver: Caregiver;
   onClose: () => void;
+  user: User;
 }
 
 interface Pet {
@@ -101,7 +103,7 @@ interface Pet {
 
 const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
   const [formData, setFormData] = useState<FormData>({
-    owner_id: user.id,
+    owner_id: user.id ?? "",
     caregiver_id: caregiver.id.toString(),
     pet_id: "",
     service_id: "",
@@ -118,24 +120,31 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-
   // Calculate total price based on selected service and time range
   useEffect(() => {
     if (formData.start_time && formData.end_time && formData.service_id) {
       const start = new Date(formData.start_time);
       const end = new Date(formData.end_time);
-      const hours = Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60);
+      const hours =
+        Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60);
 
       const selectedService = caregiver.rates.find(
         (rate) => rate.service.id.toString() === formData.service_id
       );
 
       if (selectedService) {
-        const totalPrice = (hours * parseFloat(selectedService.base_price)).toFixed(2);
+        const totalPrice = (
+          hours * parseFloat(selectedService.base_price)
+        ).toFixed(2);
         setFormData((prev) => ({ ...prev, total_price: totalPrice }));
       }
     }
-  }, [formData.start_time, formData.end_time, formData.service_id, caregiver.rates]);
+  }, [
+    formData.start_time,
+    formData.end_time,
+    formData.service_id,
+    caregiver.rates,
+  ]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -168,7 +177,7 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       const data = await response.json();
       setSuccessMessage("Booking created successfully!");
       setFormData({
-        owner_id: user.id,
+        owner_id: user.id ?? "",
         caregiver_id: caregiver.id.toString(),
         pet_id: "",
         service_id: "",
@@ -202,17 +211,23 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
 
     if (user.id) {
       fetchPets();
-    } 
+    }
   }, [user?.id]);
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-4">Agendar Servicio</h2>
-      {successMessage && <p className="text-green-500 text-center mb-4">{successMessage}</p>}
-      {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
+      {successMessage && (
+        <p className="text-green-500 text-center mb-4">{successMessage}</p>
+      )}
+      {errorMessage && (
+        <p className="text-red-500 text-center mb-4">{errorMessage}</p>
+      )}
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1">Seleccionar Mascota</label>
+          <label className="block text-sm font-medium mb-1">
+            Seleccionar Mascota
+          </label>
           <select
             name="pet_id"
             value={formData.pet_id}
@@ -220,7 +235,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
             className="w-full p-2 border border-gray-300 rounded-md"
             required
           >
-            <option value="" disabled>Seleccionar Mascota</option>
+            <option value="" disabled>
+              Seleccionar Mascota
+            </option>
             {pets.map((pet) => (
               <option key={pet.id} value={pet.id.toString()}>
                 {pet.name}
@@ -237,7 +254,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
             className="w-full p-2 border border-gray-300 rounded-md"
             required
           >
-            <option value="" disabled>Seleccionar Servicio</option>
+            <option value="" disabled>
+              Seleccionar Servicio
+            </option>
             {caregiver.rates.map((rate) => (
               <option key={rate.service.id} value={rate.service.id.toString()}>
                 {rate.service.name}
@@ -246,7 +265,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Fecha y Hora de Inicio</label>
+          <label className="block text-sm font-medium mb-1">
+            Fecha y Hora de Inicio
+          </label>
           <input
             type="datetime-local"
             name="start_time"
@@ -257,7 +278,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Fecha y Hora de Finalización</label>
+          <label className="block text-sm font-medium mb-1">
+            Fecha y Hora de Finalización
+          </label>
           <input
             type="datetime-local"
             name="end_time"
@@ -278,7 +301,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
           />
         </div>
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1">Instrucciones Adicionales</label>
+          <label className="block text-sm font-medium mb-1">
+            Instrucciones Adicionales
+          </label>
           <textarea
             name="additional_instructions"
             value={formData.additional_instructions}
@@ -303,6 +328,6 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       </button>
     </div>
   );
-}
+};
 
 export default CreateBookingForm;
