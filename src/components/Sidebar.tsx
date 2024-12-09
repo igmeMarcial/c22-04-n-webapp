@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
       animate={isExpanded ? "expanded" : "collapsed"}
       variants={sidebarVariants}
       className={cn(
-        "bg-white",
+        "bg-white h-full",
         "shadow-xl relative",
         "flex flex-col p-4 transition-all duration-300",
         "overflow-hidden "

@@ -104,7 +104,7 @@ const UpadteCaregiverProfile = ({ user }: { user: User }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="  py-8 px-4 sm:px-6 lg:px-8  ">
       <motion.div
         initial="hidden"
         animate="visible"

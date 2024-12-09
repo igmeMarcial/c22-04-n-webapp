@@ -12,11 +12,15 @@ export default async function AdminLayout({
   const user = await getCurrentUser();
   if (!user || !user.id) redirect("/login");
   return (
-    <div className="flex flex-col min-h-screen">
-      <HeaderDashboard />
-      <div className="flex flex-1 ">
-        <Sidebar user={user} />
-        <main className="border flex-1 ">{children}</main>
+    <div className="h-screen w-full flex flex-col">
+      <div className="flex-none">
+        <HeaderDashboard />
+      </div>
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-none">
+          <Sidebar user={user} />
+        </div>
+        <main className="flex-1 overflow-auto ">{children}</main>
       </div>
     </div>
   );

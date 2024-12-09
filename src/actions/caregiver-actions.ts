@@ -243,15 +243,24 @@ export async function obtenerReservasCuidador() {
 
   const userId = session.user.id;
 
+  // Obtener el perfil del cuidador asociado al usuario
+  const caregiverProfile = await prisma.caregiverProfile.findUnique({
+    where: { userId },
+    select: { id: true }, // Solo necesitamos el ID del perfil
+  });
+
+  if (!caregiverProfile) {
+    throw new Error("No se encontró un perfil de cuidador asociado a este usuario");
+  }
+  const caregiverId = caregiverProfile.id;
   // Obtener todas las reservas del cuidador
   const bookings = await prisma.booking.findMany({
-    where: { caregiverId: Number(userId) },
+    where: { caregiverId },
     include: {
       pet: true,
       owner: true,
     },
   });
-
   return bookings;
 }
 
@@ -264,11 +273,24 @@ export async function obtenerReseñasCuidador() {
 
   const userId = session.user.id;
 
+
+  // Obtener el perfil del cuidador asociado al usuario
+  const caregiverProfile = await prisma.caregiverProfile.findUnique({
+    where: { userId },
+    select: { id: true }, // Solo necesitamos el ID del perfil
+  });
+
+  if (!caregiverProfile) {
+    throw new Error("No se encontró un perfil de cuidador asociado a este usuario");
+  }
+
+  const caregiverId = caregiverProfile.id;
+
   // Obtener todas las reseñas del cuidador
   const reviews = await prisma.review.findMany({
      where: {
       booking: {
-        caregiverId: Number(userId),  // Usa la relación 'booking' para acceder al 'caregiverId'
+        caregiverId,  // Usa la relación 'booking' para acceder al 'caregiverId'
       },
     },
     include: {
@@ -288,9 +310,21 @@ export async function obtenerServiciosCuidador() {
 
   const userId = session.user.id;
 
+   // Obtener el perfil del cuidador asociado al usuario
+  const caregiverProfile = await prisma.caregiverProfile.findUnique({
+    where: { userId },
+    select: { id: true }, // Solo necesitamos el ID del perfil
+  });
+
+  if (!caregiverProfile) {
+    throw new Error("No se encontró un perfil de cuidador asociado a este usuario");
+  }
+
+  const caregiverId = caregiverProfile.id;
+
   // Obtener los servicios ofrecidos por el cuidador
   const services = await prisma.caregiverRate.findMany({
-    where: { caregiverId: Number(userId) },
+    where: { caregiverId },
     include: { service: true },
   });
 

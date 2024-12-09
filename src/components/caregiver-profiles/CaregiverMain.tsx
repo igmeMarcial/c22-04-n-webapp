@@ -24,16 +24,6 @@ import { Star, Clock, MapPin, CheckCircle, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "../ui/Badge";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
@@ -77,6 +67,20 @@ type CaregiverProfile = {
     end_time: string;
   }>;
 };
+
+// {
+//   id: 6,
+//   userId: 'cm4g475be0003tgzqrbczavh7',
+//   experience: 'eeeefefefe',
+//   description: 'eeeeeeeefewwweeee',
+//   coverage_radius_KM: 2,
+//   verified: 1,
+//   verification_date: '2024-12-06T00:00:00.000Z',
+//   average_rating: 0,
+//   total_reviews: 0,
+//   rates: [],
+//   availability: []
+// }
 
 function CaregiverMain() {
   const [profile, setProfile] = useState<CaregiverProfile | null>(null);
@@ -145,10 +149,6 @@ function CaregiverMain() {
       }
     );
   };
-  console.log(profile);
-  console.log(bookings);
-  console.log(reviews);
-  console.log(services);
 
   if (loading) {
     return (
@@ -168,12 +168,7 @@ function CaregiverMain() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="space-y-6"
-        >
+        <div className="space-y-6">
           {/* Header */}
           <Card className="border-none shadow-lg bg-gradient-to-r from-[#222F92] to-[#148E8F]">
             <CardHeader className="text-white">
@@ -231,12 +226,7 @@ function CaregiverMain() {
             </TabsContent>
 
             <TabsContent value="reservas">
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid gap-6 md:grid-cols-2"
-              >
+              <motion.div className="grid gap-6 md:grid-cols-2">
                 {bookings.map((booking) => (
                   <motion.div key={booking.id} variants={itemVariants}>
                     <Card>
@@ -280,12 +270,7 @@ function CaregiverMain() {
             </TabsContent>
 
             <TabsContent value="resenas">
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid gap-6 md:grid-cols-2"
-              >
+              <motion.div className="grid gap-6 md:grid-cols-2">
                 {reviews.map((review) => (
                   <motion.div key={review.id} variants={itemVariants}>
                     <Card>
@@ -323,12 +308,7 @@ function CaregiverMain() {
             </TabsContent>
 
             <TabsContent value="servicios">
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-              >
+              <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {services.map((service) => (
                   <motion.div key={service.serviceId} variants={itemVariants}>
                     <Card>
@@ -360,7 +340,7 @@ function CaregiverMain() {
               </motion.div>
             </TabsContent>
           </Tabs>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
