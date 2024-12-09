@@ -28,9 +28,10 @@ import {
   SelectValue,
 } from "../ui/Select";
 import { breedOptions, uplaodImagesTest } from "../constant/pet";
-import { MediaDto } from "@/lib/s3/action";
+import { MediaDto, UploadManyToS3 } from "@/lib/s3/action";
 import { Pet } from "./PetsList";
 import { updatePet } from "@/actions/pets-action";
+import Image from "next/image";
 
 interface PetFormProps {
   closeModal?: () => void;
@@ -103,8 +104,7 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
       setLoading(true);
       let uploadedImages: MediaDto[] = [];
       if (images.length > 0) {
-        //aqui cambiamos si se ve subir a amzon s3
-        // uploadedImages = await UploadManyToS3(images);
+        uploadedImages = await UploadManyToS3(images);
         uploadedImages = uplaodImagesTest;
       }
       const finalImages = isEditing
@@ -155,7 +155,7 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
       form.setValue("breed", "");
       setSelectedSpecies(form.getValues("species"));
     }
-  }, [form.watch("species"), form, selectedSpecies]);
+  }, [form, selectedSpecies]);
 
   return (
     <div className="max-h-[600px]  overflow-y-auto px-6">
@@ -369,10 +369,12 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
                     exit={{ opacity: 0, scale: 0.8 }}
                     className="relative w-24 h-24"
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
+                      width={96}
+                      height={96}
+                      className="object-cover rounded-lg"
                     />
                     <button
                       type="button"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type ClassValue = string | number | boolean | undefined | null;
 type ClassArray = ClassValue[];
 type ClassDictionary = Record<string, any>;

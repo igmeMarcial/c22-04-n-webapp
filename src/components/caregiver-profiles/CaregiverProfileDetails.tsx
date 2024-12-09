@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import CaregiverSchedule from './CaregiverSchedule';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import CaregiverSchedule from "./CaregiverSchedule";
 
 interface CaregiverProfile {
   id: number;
@@ -40,12 +40,13 @@ const CaregiverProfileDetails: React.FC = () => {
       try {
         const response = await fetch(`/api/caregiver-profiles/${id}`); // Usar el id desde la URL
         if (!response.ok) {
-          throw new Error('CaregiverProfile not found');
+          throw new Error("CaregiverProfile not found");
         }
         const data: CaregiverProfile = await response.json();
         setProfile(data);
       } catch (err) {
-        setError('Error fetching caregiver profile');
+        console.log(err);
+        setError("Error fetching caregiver profile");
       } finally {
         setLoading(false);
       }
@@ -69,21 +70,48 @@ const CaregiverProfileDetails: React.FC = () => {
   return (
     <div className="min-w-full bg-white border border-gray-300 p-4">
       <h1 className="text-xl font-bold">Detalles del Cuidador</h1>
-      <p><strong>ID:</strong> {profile.id}</p>
-      <p><strong>Usuario ID:</strong> {profile.userId}</p>
-      <p><strong>Experiencia:</strong> {profile.experience || 'N/A'}</p>
-      <p><strong>Descripción:</strong> {profile.description || 'N/A'}</p>
-      <p><strong>Radio de cobertura (KM):</strong> {profile.coverage_radius_KM}</p>
-      <p><strong>Verificado:</strong> {profile.verified ? 'Sí' : 'No'}</p>
-      <p><strong>Fecha de verificación:</strong> {profile.verification_date || 'N/A'}</p>
-      <p><strong>Calificación promedio:</strong> {profile.average_rating}</p>
-      <p><strong>Total de reseñas:</strong> {profile.total_reviews}</p>
+      <p>
+        <strong>ID:</strong> {profile.id}
+      </p>
+      <p>
+        <strong>Usuario ID:</strong> {profile.userId}
+      </p>
+      <p>
+        <strong>Experiencia:</strong> {profile.experience || "N/A"}
+      </p>
+      <p>
+        <strong>Descripción:</strong> {profile.description || "N/A"}
+      </p>
+      <p>
+        <strong>Radio de cobertura (KM):</strong> {profile.coverage_radius_KM}
+      </p>
+      <p>
+        <strong>Verificado:</strong> {profile.verified ? "Sí" : "No"}
+      </p>
+      <p>
+        <strong>Fecha de verificación:</strong>{" "}
+        {profile.verification_date || "N/A"}
+      </p>
+      <p>
+        <strong>Calificación promedio:</strong> {profile.average_rating}
+      </p>
+      <p>
+        <strong>Total de reseñas:</strong> {profile.total_reviews}
+      </p>
 
       <h2 className="text-lg font-semibold mt-4">Detalles del Usuario</h2>
-      <p><strong>ID:</strong> {profile.user.id}</p>
-      <p><strong>Nombre:</strong> {profile.user.name}</p>
-      <p><strong>Email:</strong> {profile.user.email}</p>
-      <p><strong>Teléfono:</strong> {profile.user.phone || 'N/A'}</p>
+      <p>
+        <strong>ID:</strong> {profile.user.id}
+      </p>
+      <p>
+        <strong>Nombre:</strong> {profile.user.name}
+      </p>
+      <p>
+        <strong>Email:</strong> {profile.user.email}
+      </p>
+      <p>
+        <strong>Teléfono:</strong> {profile.user.phone || "N/A"}
+      </p>
       <CaregiverSchedule availability={profile.availability} />
     </div>
   );

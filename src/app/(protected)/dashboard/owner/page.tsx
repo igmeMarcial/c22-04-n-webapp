@@ -10,7 +10,7 @@ async function page() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] lg:grid-cols-[2fr_1fr_0fr] gap-4 p-0 md:p-4 min-h-[calc(100vh-126px)]">
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-auto">
-        <BookingStatusList user={session.user} />
+        <BookingStatusList />
       </div>
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-auto">
         <PetsList user={session.user} />

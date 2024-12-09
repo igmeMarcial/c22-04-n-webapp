@@ -1,6 +1,5 @@
 "use client";
-
-import { User } from "next-auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -22,7 +21,7 @@ interface Booking {
   caregiver_image?: string;
 }
 
-const BookingStatusList = ({ user }: { user: User }) => {
+const BookingStatusList = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 

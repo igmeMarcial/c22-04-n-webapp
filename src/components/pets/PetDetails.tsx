@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; // Importar useRouter
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router"; // Importar useRouter
 
 /* 
 {"id":2,
@@ -49,12 +49,13 @@ const PetDetails: React.FC = () => {
       try {
         const response = await fetch(`/api/pets/${id}`); // Usar el id desde la URL
         if (!response.ok) {
-          throw new Error('Pet not found');
+          throw new Error("Pet not found");
         }
         const data: Pet = await response.json();
         setPet(data);
       } catch (err) {
-        setError('Error fetching pet');
+        console.log(err);
+        setError("Error fetching pet");
       } finally {
         setLoading(false);
       }
@@ -78,22 +79,50 @@ const PetDetails: React.FC = () => {
   return (
     <div className="min-w-full bg-white border border-gray-300">
       <h1>Detalles de la Mascota</h1>
-      <p><strong>ID:</strong> {pet.id}</p>
-      <p><strong>Nombre:</strong> {pet.name}</p>
-      <p><strong>Raza</strong> {pet.breed}</p>
-      <p><strong>Especie:</strong> {pet.species}</p>
-      <p><strong>Edad:</strong> {pet.age}</p>
-      <p><strong>Instrucciones Especiales:</strong> {pet.special_instructions}</p>
-      <p><strong>Necesidades Medicas:</strong> {pet.medical_needs}</p>
-      <p><strong>Esta Activo?:</strong> {pet.is_active ? 'Si' : 'No'}</p>
+      <p>
+        <strong>ID:</strong> {pet.id}
+      </p>
+      <p>
+        <strong>Nombre:</strong> {pet.name}
+      </p>
+      <p>
+        <strong>Raza</strong> {pet.breed}
+      </p>
+      <p>
+        <strong>Especie:</strong> {pet.species}
+      </p>
+      <p>
+        <strong>Edad:</strong> {pet.age}
+      </p>
+      <p>
+        <strong>Instrucciones Especiales:</strong> {pet.special_instructions}
+      </p>
+      <p>
+        <strong>Necesidades Medicas:</strong> {pet.medical_needs}
+      </p>
+      <p>
+        <strong>Esta Activo?:</strong> {pet.is_active ? "Si" : "No"}
+      </p>
 
       <h2>Detalles del Dueño</h2>
-      <p><strong>ID:</strong> {pet.owner.id}</p>
-      <p><strong>Nombre:</strong> {pet.owner.name}</p>
-      <p><strong>Apellido:</strong> {pet.owner.last_name}</p>
-      <p><strong>Email:</strong> {pet.owner.email}</p>
-      <p><strong>Telefono:</strong> {pet.owner.phone || 'N/A'}</p>
-      <p><strong>Dirección:</strong> {pet.owner.address || 'N/A'}</p>
+      <p>
+        <strong>ID:</strong> {pet.owner.id}
+      </p>
+      <p>
+        <strong>Nombre:</strong> {pet.owner.name}
+      </p>
+      <p>
+        <strong>Apellido:</strong> {pet.owner.last_name}
+      </p>
+      <p>
+        <strong>Email:</strong> {pet.owner.email}
+      </p>
+      <p>
+        <strong>Telefono:</strong> {pet.owner.phone || "N/A"}
+      </p>
+      <p>
+        <strong>Dirección:</strong> {pet.owner.address || "N/A"}
+      </p>
     </div>
   );
 };

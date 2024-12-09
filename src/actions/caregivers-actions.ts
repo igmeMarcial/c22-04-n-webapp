@@ -1,4 +1,5 @@
 'use server';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "@/lib/db";
 import { Decimal } from "@prisma/client/runtime/library";
 import { auth } from "../../auth";  

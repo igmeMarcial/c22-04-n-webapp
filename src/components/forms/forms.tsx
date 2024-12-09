@@ -64,7 +64,8 @@ export function UserAuthForm({ type }: UserAuthFormProps) {
           placeholder="nombre@ejemplo.com"
           type="email"
           className="focus:ring-2 focus:ring-[#148E8F]/50 transition-all duration-300"
-          disabled={isLoading || isGoogleLoading}
+          // disabled={isLoading || isGoogleLoading}
+          disabled
           {...register("email")}
         />
         {errors?.email && (
@@ -77,7 +78,8 @@ export function UserAuthForm({ type }: UserAuthFormProps) {
         transition={{ type: "spring", stiffness: 300 }}
       >
         <Button
-          disabled={isLoading}
+          // disabled={isLoading}
+          disabled
           className="w-full bg-[#222F92] hover:bg-[#222F92]/90 transition-colors"
         >
           {type === "register"

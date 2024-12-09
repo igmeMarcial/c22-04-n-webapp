@@ -44,7 +44,6 @@ const CaregiverProfileForm: React.FC = () => {
         throw new Error(errorData.error || "Error creating caregiver profile");
       }
 
-      const data = await response.json();
       setSuccess("Perfil de cuidador creado con éxito!");
       setFormData({
         coverage_radius_KM: 0,
@@ -53,8 +52,8 @@ const CaregiverProfileForm: React.FC = () => {
         average_rating: 0,
         total_reviews: 0,
       });
-    } catch (err: any) {
-      setError(err.message || "Error al crear el perfil del cuidador");
+    } catch (err) {
+      console.log(err);
     } finally {
       setLoading(false);
     }

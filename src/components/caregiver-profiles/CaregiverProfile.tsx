@@ -92,6 +92,7 @@ const UpadteCaregiverProfile = ({ user }: { user: User }) => {
         toast.success("Perfil actualizado exitosamente");
       }
     } catch (err) {
+      console.log(err);
       setError(
         "Hubo un error al actualizar el perfil. Por favor, intente nuevamente."
       );

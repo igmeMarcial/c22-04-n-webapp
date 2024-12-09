@@ -1,4 +1,5 @@
 "use client";
+
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { HeartIcon, PawPrintIcon, SparklesIcon } from "lucide-react";
@@ -9,7 +10,6 @@ const HeroSection = () => {
   return (
     <div className="px-2 md:px-16 relative min-h-screen flex items-center bg-gradient-to-br from-[#222F92]/5 to-[#148E8F]/5">
       <div className="container mx-auto px-4 grid md:grid-cols-2 items-center gap-12">
-        {/* Text Content */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -44,14 +44,16 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-[#148E8F] text-[#148E8F] hover:bg-[#148E8F]/10 hidden md:flex"
-              >
-                <HeartIcon className="mr-2 h-5 w-5" />
-                Registrarme ahora
-              </Button>
+              <Link href={"/login"}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-[#148E8F] text-[#148E8F] hover:bg-[#148E8F]/10 hidden md:flex"
+                >
+                  <HeartIcon className="mr-2 h-5 w-5" />
+                  Registrarme ahora
+                </Button>
+              </Link>
             </motion.div>
           </div>
 
@@ -88,8 +90,6 @@ const HeroSection = () => {
             <span>+500 Cuidadores verificados</span>
           </div>
         </motion.div>
-
-        {/* Hero Image/Animation */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -99,10 +99,11 @@ const HeroSection = () => {
           <div className="relative w-full max-w-[500px]">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#148E8F]/10 rounded-full animate-blob"></div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#222F92]/10 rounded-full animate-blob animation-delay-2000"></div>
-
-            <img
-              src="/images/hero.png "
+            <Image
+              src="/images/hero.png"
               alt="Mascotas felices con cuidadores"
+              width={500} // Define the width
+              height={200} // Define the height
               className="relative z-10 rounded-2xl shadow-2xl"
             />
           </div>

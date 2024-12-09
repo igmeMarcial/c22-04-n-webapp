@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { User } from "../../../types/types";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface Caregiver {
   id: number;
   userId: string;
@@ -160,7 +160,8 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
-
+    console.log(loading);
+    console.log(error);
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
@@ -175,7 +176,9 @@ const CreateBookingForm = ({ caregiver, onClose, user }: Props) => {
       }
 
       const data = await response.json();
+      console.log(data);
       setSuccessMessage("Booking created successfully!");
+
       setFormData({
         owner_id: user.id ?? "",
         caregiver_id: caregiver.id.toString(),

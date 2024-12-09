@@ -1,7 +1,7 @@
 import prisma from "../../lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { NextApiRequest, NextApiResponse } from "next";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Definimos la interfaz para los datos de la reserva
 interface Booking {
   id: number;
@@ -17,6 +17,8 @@ interface Booking {
 }
 
 // Definimos la interfaz para la creación de reservas
+
+/*
 interface BookingData {
   owner_id: string;
   caregiver_id: number;
@@ -28,7 +30,7 @@ interface BookingData {
   total_price: Decimal;
   additional_instructions: string | null;
 }
-
+*/
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -70,7 +72,9 @@ export default async function handler(
 
   if (req.method === "POST") {
     if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: "Request body is empty or invalid." });
+      return res
+        .status(400)
+        .json({ error: "Request body is empty or invalid." });
     }
 
     const {
@@ -126,7 +130,9 @@ export default async function handler(
 
       // Prisma-specific error handling
       if ((error as any)?.code === "P2003") {
-        return res.status(400).json({ error: "Invalid foreign key. Please check the IDs." });
+        return res
+          .status(400)
+          .json({ error: "Invalid foreign key. Please check the IDs." });
       }
 
       return res.status(500).json({ error: "Error creating booking" });

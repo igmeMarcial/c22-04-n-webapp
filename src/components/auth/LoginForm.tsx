@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Alert } from '../ui/Alert';
+import React, { useState } from "react";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Alert } from "../ui/Alert";
 
 interface LoginFormData {
   email: string;
@@ -10,17 +10,17 @@ interface LoginFormData {
 
 export function LoginForm() {
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -31,18 +31,22 @@ export function LoginForm() {
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // For demo purposes, show error for invalid credentials
-      if (formData.email !== 'demo@example.com' || formData.password !== 'password') {
-        throw new Error('Credenciales inválidas. Por favor, inténtalo de nuevo.');
+      if (
+        formData.email !== "demo@example.com" ||
+        formData.password !== "password"
+      ) {
+        throw new Error(
+          "Credenciales inválidas. Por favor, inténtalo de nuevo."
+        );
       }
 
       // Handle successful login here
-      console.log('Login successful:', formData);
-      
+      console.log("Login successful:", formData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ha ocurrido un error');
+      setError(err instanceof Error ? err.message : "Ha ocurrido un error");
     } finally {
       setIsLoading(false);
     }
@@ -50,12 +54,8 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <Alert variant="error">
-          {error}
-        </Alert>
-      )}
-      
+      {error && <Alert variant="error">{error}</Alert>}
+
       <div>
         <Input
           type="email"
@@ -67,7 +67,7 @@ export function LoginForm() {
           disabled={isLoading}
         />
       </div>
-      
+
       <div>
         <Input
           type="password"
@@ -79,19 +79,15 @@ export function LoginForm() {
           disabled={isLoading}
         />
       </div>
-      
+
       <div className="text-right">
         <a href="#" className="text-sm text-gray-500 hover:text-amber-600">
           ¿Olvidaste tu contraseña?
         </a>
       </div>
-      
-      <Button 
-        type="submit" 
-        fullWidth 
-        disabled={isLoading}
-      >
-        {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
       </Button>
 
       <div className="text-sm text-center text-gray-500">

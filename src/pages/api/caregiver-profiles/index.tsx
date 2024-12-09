@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import { Decimal } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -18,13 +17,13 @@ const createCaregiver = async (req: NextApiRequest, res: NextApiResponse) => {
   // Validaciones básicas
   if (
     !userId ||
-    typeof coverage_radius_KM !== 'number' ||
-    typeof verified !== 'number' ||
-    typeof average_rating !== 'number' ||
-    typeof total_reviews !== 'number'
+    typeof coverage_radius_KM !== "number" ||
+    typeof verified !== "number" ||
+    typeof average_rating !== "number" ||
+    typeof total_reviews !== "number"
   ) {
-    console.log('Request body:', req.body);
-    return res.status(400).json({ error: 'Invalid input data' });
+    console.log("Request body:", req.body);
+    return res.status(400).json({ error: "Invalid input data" });
   }
 
   try {
@@ -34,17 +33,16 @@ const createCaregiver = async (req: NextApiRequest, res: NextApiResponse) => {
         coverage_radius_KM,
         experience,
         verified,
-        average_rating: new Decimal(average_rating),
+        average_rating: "0.00",
         total_reviews,
       },
     });
     return res.status(201).json(newCaregiver);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Error creating caregiver profile' });
+    return res.status(500).json({ error: "Error creating caregiver profile" });
   }
 };
-
 
 // Obtener todos los perfiles de cuidadores
 const getCaregivers = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -57,7 +55,7 @@ const getCaregivers = async (req: NextApiRequest, res: NextApiResponse) => {
           include: {
             service: true,
           },
-        }
+        },
       },
     });
     return res.status(200).json(caregivers);
@@ -67,7 +65,10 @@ const getCaregivers = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     return createCaregiver(req, res);
   } else if (req.method === "GET") {

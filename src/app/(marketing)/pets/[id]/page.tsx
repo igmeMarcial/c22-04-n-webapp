@@ -4,13 +4,10 @@ import { redirect } from "next/navigation";
 import { getPetById } from "@/actions/pets-action";
 import { PetDetailsLanding } from "@/components/pets/PetDetailLanding";
 
-export default async function PetDetailsPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const petId = params?.id;
-  const pet = await getPetById(parseInt(petId, 10));
+type Params = Promise<{ id: string }>;
+export default async function PetDetailsPage({ params }: { params: Params }) {
+  const petId = await params;
+  const pet = await getPetById(parseInt(petId.id, 10));
 
   if (!pet) {
     redirect("/pets");

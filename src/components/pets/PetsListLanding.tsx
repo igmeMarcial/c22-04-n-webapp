@@ -55,6 +55,7 @@ export function PetListLanding() {
         const petsData = await getPets();
         setPets(petsData);
       } catch (err) {
+        console.log(err);
         setError(
           "Error al cargar las mascotas. Por favor, intente nuevamente."
         );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { LucideIcon } from "lucide-react";
 import { Button } from "../ui/button";
 interface SocialLoginButtonProps {
@@ -7,11 +7,14 @@ interface SocialLoginButtonProps {
   onClick: () => void;
 }
 
-export function SocialLoginButton({ icon: Icon, provider, onClick }: SocialLoginButtonProps) {
+export function SocialLoginButton({
+  icon: Icon,
+  provider,
+  onClick,
+}: SocialLoginButtonProps) {
   const handleClick = () => {
     onClick();
   };
-
 
   return (
     <>
