@@ -30,7 +30,7 @@ import {
 import { breedOptions, uplaodImagesTest } from "../constant/pet";
 import { MediaDto, UploadManyToS3 } from "@/lib/s3/action";
 import { Pet } from "./PetsList";
-import { updatePet } from "@/actions/pets-action";
+import { createPet, updatePet } from "@/actions/pets-action";
 import Image from "next/image";
 
 interface PetFormProps {
@@ -119,25 +119,15 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
         toast.success("Mascota actualizada exitosamente!");
         console.log(updatedPet);
       } else {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/pets`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId: user.id,
-              ...data,
-              images: uploadedImages,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al crear la mascota");
-        }
-        const createdPet = await response.json();
+        const response = await createPet({
+          ...data,
+          userId: user.id ?? "",
+          images: finalImages,
+          special_instructions: data.special_instructions ?? "",
+          medical_needs: data.medical_needs ?? "",
+        });
         toast.success("Mascota creada exitosamente!");
-        console.log(createdPet);
+        console.log(response);
       }
       setImages([]);
       form.reset();
