@@ -115,4 +115,29 @@ export async function getPetById(id: number) {
   }
 }
 
-
+export async function getPetsByUserId(userId: string) {
+  try {
+    const pets = await prisma.pet.findMany({
+      where: {
+        userId: userId
+      },
+      include: {
+        owner: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+            address: true
+          }
+        }
+      }
+    });
+    return pets.map((pet) => ({
+      ...pet,
+      images: (pet.images as { fileName: string; publicUrl: string }[]) ?? [],
+    }));
+  } catch (error) {
+    console.error('Error fetching pets:', error);
+    throw new Error('Failed to fetch pets');
+  }
+}
