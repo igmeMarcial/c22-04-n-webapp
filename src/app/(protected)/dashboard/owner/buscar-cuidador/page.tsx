@@ -1,5 +1,5 @@
 import CaregiverProfileList from "@/components/caregiver-profiles/CaregiverProfileList";
-import { auth } from "../../../../../auth";
+import { auth } from "../../../../../../auth";
 import { redirect } from "next/navigation";
 
 async function CareGiversPage() {
