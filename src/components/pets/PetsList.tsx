@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import PetForm from "@/components/pets/PetForm";
 import { User } from "../../../types/types";
 import PetCard from "./PetCard";
+import { getPetsByUserId } from "@/actions/pets-action";
 
 export interface Pet {
   id: number;
@@ -54,30 +55,17 @@ const PetsList: React.FC<PetsListProps> = ({ user }) => {
     setSelectedPet(pet);
     setIsModalOpen(true);
   };
-  useEffect(() => {
-    const fetchPets = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/pets?userId=${user.id}`
-        );
-        if (!response.ok) {
-          throw new Error("Error al cargar mascotas");
-        }
-        const data: Pet[] = await response.json();
-        setPets(data);
-      } catch (error) {
-        console.log(error);
-        setError(error instanceof Error ? error.message : "Error desconocido");
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  // useEffect para getPetsByUserId
+  useEffect(() => {
     if (user.id) {
-      fetchPets();
+      getPetsByUserId(user.id)
+        .then((data) => setPets(data))
+        .catch((error) => setError(error instanceof Error ? error.message : "Error desconocido"))
+        .finally(() => setLoading(false));
+
     }
-  }, [user?.id]);
+  }, [user?.id]); 
 
   if (loading) {
     return (
