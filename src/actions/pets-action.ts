@@ -10,12 +10,12 @@ interface PetUpdateData {
   special_instructions?: string;
   medical_needs?: string;
   is_active?: number;
-   images?: { fileName: string; publicUrl: string }[]; // Cambia este tipo según el tipo real de 'images'
+  images?: { fileName: string; publicUrl: string }[]; // Cambia este tipo según el tipo real de 'images'
 }
 // Actualiza una mascota
-export const updatePet = async (id: number, updatedData:PetUpdateData ) => {
+export const updatePet = async (id: number, updatedData: PetUpdateData) => {
   try {
-     const {
+    const {
       name,
       species,
       breed,
@@ -25,26 +25,26 @@ export const updatePet = async (id: number, updatedData:PetUpdateData ) => {
       medical_needs,
       is_active,
       images
-    } =updatedData;
+    } = updatedData;
     const updatedPet = await prisma.pet.update({
-      where: { id: id}, 
+      where: { id: id },
       data: {
-        ...(name && { name }), 
-        ...(species && { species }), 
-        ...(breed && { breed }), 
-        ...(age && { age }), 
-        ...(weight && { weight }), 
-        ...(special_instructions && { special_instructions }), 
-        ...(medical_needs && { medical_needs }), 
-        ...(is_active !== undefined && { is_active }), 
-        ...(images && { images }), 
+        ...(name && { name }),
+        ...(species && { species }),
+        ...(breed && { breed }),
+        ...(age && { age }),
+        ...(weight && { weight }),
+        ...(special_instructions && { special_instructions }),
+        ...(medical_needs && { medical_needs }),
+        ...(is_active !== undefined && { is_active }),
+        ...(images && { images }),
       },
     });
 
     return updatedPet;
   } catch (error) {
     console.error("Error updating pet:", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -55,10 +55,10 @@ export const deletePet = async (id: number) => {
       where: { id: id },
     });
 
-    return deletedPet; 
+    return deletedPet;
   } catch (error) {
     console.error("Error deleting pet:", error);
-    throw error; 
+    throw error;
   }
 };
 export async function getPets() {
@@ -81,7 +81,7 @@ export async function getPets() {
         createdAt: 'desc'
       }
     });
-     return pets.map((pet) => ({
+    return pets.map((pet) => ({
       ...pet,
       images: (pet.images as { fileName: string; publicUrl: string }[]) ?? [],
     }));
@@ -139,5 +139,36 @@ export async function getPetsByUserId(userId: string) {
   } catch (error) {
     console.error('Error fetching pets:', error);
     throw new Error('Failed to fetch pets');
+  }
+}
+
+// Crear una mascota
+export async function createPet(data: {
+  name: string;
+  species: string;
+  breed: string;
+  age: number;
+  weight: number;
+  special_instructions: string;
+  medical_needs: string;
+  is_active: number;
+  userId: string;
+  images: { fileName: string; publicUrl: string }[];
+}) {
+  try {
+    const pet = await prisma.pet.create({
+      data: {
+        ...data,
+        images: {
+          createMany: {
+            data: data.images
+          }
+        }
+      }
+    });
+    return pet;
+  } catch (error) {
+    console.error('Error creating pet:', error);
+    throw new Error('Failed to create pet');
   }
 }
