@@ -24,13 +24,13 @@ import {
 import { PawPrint, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "../ui/Badge";
-import { Pet } from "./PetsList";
+import { PetUser } from "./PetsList";
 import { deletePet } from "@/actions/pets-action";
 
 interface PetCardProps {
-  pet: Pet;
+  pet: PetUser;
   onDelete: (id: number) => void;
-  onUpdate: (pet: Pet) => void;
+  onUpdate: (pet: PetUser) => void;
 }
 
 const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, onUpdate }) => {
@@ -114,7 +114,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, onDelete, onUpdate }) => {
               </div>
               <Badge variant="default" className="text-xs">
                 <PawPrint className="w-3 h-3 mr-1" />
-                {pet.breed || "Sin raza"}
+                {pet.breed ?? "Sin raza"}
               </Badge>
             </div>
 

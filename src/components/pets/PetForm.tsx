@@ -27,16 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/Select";
-import { breedOptions, uplaodImagesTest } from "../constant/pet";
+import { breedOptions } from "../constant/pet";
 import { MediaDto, UploadManyToS3 } from "@/lib/s3/action";
-import { Pet } from "./PetsList";
+import { PetUser } from "./PetsList";
 import { createPet, updatePet } from "@/actions/pets-action";
 import Image from "next/image";
 
 interface PetFormProps {
   closeModal?: () => void;
   user: User;
-  pet?: Pet | null;
+  pet?: PetUser | null;
 }
 
 const speciesOptions = [
@@ -105,7 +105,6 @@ const PetForm: React.FC<PetFormProps> = ({ closeModal, user, pet }) => {
       let uploadedImages: MediaDto[] = [];
       if (images.length > 0) {
         uploadedImages = await UploadManyToS3(images);
-        uploadedImages = uplaodImagesTest;
       }
       const finalImages = isEditing
         ? [...pet.images, ...uploadedImages]

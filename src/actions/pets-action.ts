@@ -1,4 +1,5 @@
 'use server'
+import { PetUser } from "@/components/pets/PetsList";
 import { prisma } from "@/lib/db";
 
 interface PetUpdateData {
@@ -133,9 +134,19 @@ export async function getPetsByUserId(userId: string) {
       }
     });
     return pets.map((pet) => ({
-      ...pet,
+      id: pet.id,
+      userId: pet.userId,
+      name: pet.name,
+      species: pet.species,
+      breed: pet.breed,
       images: (pet.images as { fileName: string; publicUrl: string }[]) ?? [],
-    }));
+      owner: pet.owner,
+      weight:pet.weight,
+      age:pet.age,
+      special_instructions: pet.special_instructions,
+  medical_needs: pet.medical_needs,
+  is_active:pet.is_active
+    })) as PetUser[];
   } catch (error) {
     console.error('Error fetching pets:', error);
     throw new Error('Failed to fetch pets');
@@ -159,11 +170,7 @@ export async function createPet(data: {
     const pet = await prisma.pet.create({
       data: {
         ...data,
-        images: {
-          createMany: {
-            data: data.images
-          }
-        }
+        images: data.images
       }
     });
     return pet;

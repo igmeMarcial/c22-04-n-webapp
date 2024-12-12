@@ -34,16 +34,39 @@ export interface Pet {
   images: { fileName: string; publicUrl: string }[];
 }
 
+interface OwnerUser {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+}
+
+export interface PetUser {
+  id: number;
+  userId: string;
+  name: string;
+  species: string;
+  breed: string | null;
+  images: { fileName: string; publicUrl: string }[];
+  owner: OwnerUser;
+  age: number;
+  weight: number;
+  special_instructions: string | null;
+  medical_needs: string | null;
+  is_active: number;
+}
+
 interface PetsListProps {
   user: User;
 }
 
 const PetsList: React.FC<PetsListProps> = ({ user }) => {
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [pets, setPets] = useState<PetUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const [selectedPet, setSelectedPet] = useState<PetUser | null>(null);
   const handleClose = () => {
     setIsModalOpen(false);
   };
@@ -51,21 +74,22 @@ const PetsList: React.FC<PetsListProps> = ({ user }) => {
     setPets((prevPets) => prevPets.filter((pet) => pet.id !== petId));
   };
 
-  const handleUpdate = (pet: Pet) => {
+  const handleUpdate = (pet: PetUser) => {
     setSelectedPet(pet);
     setIsModalOpen(true);
   };
-
-  // useEffect para getPetsByUserId
   useEffect(() => {
     if (user.id) {
       getPetsByUserId(user.id)
         .then((data) => setPets(data))
-        .catch((error) => setError(error instanceof Error ? error.message : "Error desconocido"))
+        .catch((error) =>
+          setError(error instanceof Error ? error.message : "Error desconocido")
+        )
         .finally(() => setLoading(false));
-
     }
-  }, [user?.id]); 
+  }, [user?.id]);
+
+  console.log(pets);
 
   if (loading) {
     return (
